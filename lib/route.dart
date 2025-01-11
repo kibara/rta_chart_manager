@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:rta_chart_manager/screens/chart_titles.dart';
+import 'package:rta_chart_manager/screen/chart_titles.dart';
 
 final router = GoRouter(
   routes: [
