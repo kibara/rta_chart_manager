@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:rta_chart_flutter/route.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RTAChartManager());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RTAChartManager extends StatelessWidget {
+  const RTAChartManager({super.key});
 
   // アプリケーショントップ・エントリーポイント
   @override
