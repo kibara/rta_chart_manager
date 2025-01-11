@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rta_chart_flutter/route.dart';
+import 'package:rta_chart_manager/route.dart';
 
 void main() {
   runApp(const RTAChartManager());

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rta_chart_flutter/components/dialog/dialog_utils.dart';
+import 'package:rta_chart_manager/components/dialog/dialog_utils.dart';
 
 class ChartTitles extends StatefulWidget {
   const ChartTitles({super.key, required this.title});

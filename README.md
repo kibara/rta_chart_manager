@@ -1,4 +1,4 @@
-# rta_chart_flutter
+# rta_chart_manager
 
 A new Flutter project.
 
