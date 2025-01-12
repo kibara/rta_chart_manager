@@ -29,6 +29,29 @@ class _ChartTitlesState extends State<ChartTitles> {
     super.initState();
   }
 
+  /// チャート新規作成
+  void _addNewChartTitle() async {
+    final String? newChartTitle =
+        await DialogUtils.showEditingDialog(context, '無題');
+    if (newChartTitle != null) {
+      _chartTitleBox.add(newChartTitle);
+    }
+  }
+
+  /// チャートタイトルの編集
+  void _editChartTitle(int index) async {
+    final String? editedChartTitle = await DialogUtils.showEditingDialog(
+        context, _chartTitleBox.getAt(index).toString());
+    if (editedChartTitle != null) {
+      _chartTitleBox.putAt(index, editedChartTitle);
+    }
+  }
+
+  /// チャートの削除
+  void _deleteChartTitle(int index) {
+    _chartTitleBox.deleteAt(index);
+  }
+
   // アプリの画面構成と挙動を構成する
   @override
   Widget build(BuildContext context) {
@@ -50,7 +73,9 @@ class _ChartTitlesState extends State<ChartTitles> {
                   itemBuilder: (BuildContext context, int index) {
                     return _ChartTitleCard(
                       index: index,
-                      chartTitleBox: _chartTitleBox,
+                      title: _chartTitleBox.getAt(index).toString(),
+                      editButtonOnPressed: () => _editChartTitle(index),
+                      deleteButtonOnPressed: () => _deleteChartTitle(index),
                     );
                   }),
             );
@@ -58,13 +83,7 @@ class _ChartTitlesState extends State<ChartTitles> {
 
       // フローティングボタン
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final String? newChartTitle =
-              await DialogUtils.showEditingDialog(context, '無題');
-          if (newChartTitle != null) {
-            _chartTitleBox.add(newChartTitle);
-          }
-        },
+        onPressed: _addNewChartTitle,
         tooltip: '新規作成',
         child: const Icon(Icons.add),
       ),
@@ -75,29 +94,32 @@ class _ChartTitlesState extends State<ChartTitles> {
 /// チャートタイトルが書かれたカード
 class _ChartTitleCard extends StatelessWidget {
   final int index;
-  final Box chartTitleBox;
+  final String title;
+  final VoidCallback editButtonOnPressed;
+  final VoidCallback deleteButtonOnPressed;
 
   const _ChartTitleCard({
     required this.index,
-    required this.chartTitleBox,
+    required this.title,
+    required this.editButtonOnPressed,
+    required this.deleteButtonOnPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(chartTitleBox.getAt(index).toString()),
-        trailing: IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () async {
-            final String? editedChartTitle =
-                await DialogUtils.showEditingDialog(
-                    context, chartTitleBox.getAt(index).toString());
-            if (editedChartTitle != null) {
-              chartTitleBox.putAt(index, editedChartTitle);
-            }
-          },
-        ),
+        title: Text(title),
+        trailing: Wrap(children: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: editButtonOnPressed,
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: deleteButtonOnPressed,
+          ),
+        ]),
         onTap: () => {print("on card tap $index")},
       ),
     );
