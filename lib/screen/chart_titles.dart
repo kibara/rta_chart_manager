@@ -91,6 +91,7 @@ class _ChartTitlesState extends State<ChartTitles> {
   }
 }
 
+// TODO: ここまできたら抽象化していい気もする
 /// チャートタイトルが書かれたカード
 class _ChartTitleCard extends StatelessWidget {
   final int index;
