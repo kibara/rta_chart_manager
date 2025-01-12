@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/database/collections.dart';
@@ -15,12 +16,6 @@ class ChartTitles extends StatefulWidget {
 }
 
 class _ChartTitlesState extends State<ChartTitles> {
-  // ステートで保持する値
-  // {
-  //     "chart_title": [{ * chart_part1_json * }, { * chart_part2_json * }],
-  //     ...
-  // }
-  final Map<String, dynamic> _charts = {};
   late final Box _chartTitleBox;
 
   @override
@@ -52,6 +47,14 @@ class _ChartTitlesState extends State<ChartTitles> {
     _chartTitleBox.deleteAt(index);
   }
 
+  /// チャート詳細に遷移
+  void _navChartDetail(int index, BuildContext context) {
+    //
+    print("on tap card $index");
+    String chartTitle = _chartTitleBox.getAt(index);
+    context.push('/chart_detail', extra: chartTitle);
+  }
+
   // アプリの画面構成と挙動を構成する
   @override
   Widget build(BuildContext context) {
@@ -76,6 +79,7 @@ class _ChartTitlesState extends State<ChartTitles> {
                       title: _chartTitleBox.getAt(index).toString(),
                       editButtonOnPressed: () => _editChartTitle(index),
                       deleteButtonOnPressed: () => _deleteChartTitle(index),
+                      cardOnTap: () => _navChartDetail(index, context),
                     );
                   }),
             );
@@ -98,12 +102,14 @@ class _ChartTitleCard extends StatelessWidget {
   final String title;
   final VoidCallback editButtonOnPressed;
   final VoidCallback deleteButtonOnPressed;
+  final VoidCallback cardOnTap;
 
   const _ChartTitleCard({
     required this.index,
     required this.title,
     required this.editButtonOnPressed,
     required this.deleteButtonOnPressed,
+    required this.cardOnTap,
   });
 
   @override
@@ -121,7 +127,7 @@ class _ChartTitleCard extends StatelessWidget {
             onPressed: deleteButtonOnPressed,
           ),
         ]),
-        onTap: () => {print("on card tap $index")},
+        onTap: cardOnTap,
       ),
     );
   }
