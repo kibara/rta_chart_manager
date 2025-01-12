@@ -17,10 +17,12 @@ class ChartTitles extends StatefulWidget {
 
 class _ChartTitlesState extends State<ChartTitles> {
   late final Box _chartTitleBox;
+  late final Box _chartDetailBox;
 
   @override
   void initState() {
     _chartTitleBox = KvsUtils.getBox(Collections.chartTitles);
+    _chartDetailBox = KvsUtils.getBox(Collections.chartDetails);
     super.initState();
   }
 
@@ -30,6 +32,7 @@ class _ChartTitlesState extends State<ChartTitles> {
         await DialogUtils.showEditingDialog(context, '無題');
     if (newChartTitle != null) {
       _chartTitleBox.add(newChartTitle);
+      _chartDetailBox.put(newChartTitle, {});
     }
   }
 
@@ -44,7 +47,9 @@ class _ChartTitlesState extends State<ChartTitles> {
 
   /// チャートの削除
   void _deleteChartTitle(int index) {
+    String chartTitle = _chartTitleBox.getAt(index);
     _chartTitleBox.deleteAt(index);
+    _chartDetailBox.delete(chartTitle);
   }
 
   /// チャート詳細に遷移
