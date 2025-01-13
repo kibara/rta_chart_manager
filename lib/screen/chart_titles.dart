@@ -53,11 +53,11 @@ class _ChartTitlesState extends State<ChartTitles> {
   }
 
   /// チャート詳細に遷移
-  void _navChartDetail(int index, BuildContext context) {
+  void _navChartSummary(int index, BuildContext context) {
     //
     print("on tap card $index");
     String chartTitle = _chartTitleBox.getAt(index);
-    context.push('/chart_detail', extra: chartTitle);
+    context.push('/chart_summary', extra: chartTitle);
   }
 
   // アプリの画面構成と挙動を構成する
@@ -84,7 +84,7 @@ class _ChartTitlesState extends State<ChartTitles> {
                       title: _chartTitleBox.getAt(index).toString(),
                       editButtonOnPressed: () => _editChartTitle(index),
                       deleteButtonOnPressed: () => _deleteChartTitle(index),
-                      cardOnTap: () => _navChartDetail(index, context),
+                      cardOnTap: () => _navChartSummary(index, context),
                     );
                   }),
             );
