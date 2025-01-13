@@ -28,13 +28,28 @@ class _ChartTitlesState extends State<ChartTitles> {
     _chartDetailBox = KvsUtils.getBox(Collections.chartDetails);
 
     _sortedChartTitles = List.from(_chartTitleBox.values);
-    sortChartTitles();
+    _sortChartTitles();
 
     super.initState();
   }
 
-  void sortChartTitles() {
+  /// チャートタイトルのソート
+  void _sortChartTitles() {
     _sortedChartTitles.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+  }
+
+  /// チャートタイトルの並び替えイベント
+  void _reorderChartTitles(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final ChartTitleModel item = _sortedChartTitles.removeAt(oldIndex);
+    _sortedChartTitles.insert(newIndex, item);
+
+    for (var i = 0; i < _sortedChartTitles.length; i++) {
+      _sortedChartTitles[i].orderIndex = i;
+      _sortedChartTitles[i].save();
+    }
   }
 
   /// チャート新規作成
@@ -53,14 +68,12 @@ class _ChartTitlesState extends State<ChartTitles> {
 
   /// チャートタイトルの編集
   void _editChartTitle(int index) async {
-    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
-    final String? editedChartTitle =
-        await DialogUtils.showEditingDialog(context, chartTitleModel.title);
+    final String? editedChartTitle = await DialogUtils.showEditingDialog(
+        context, _sortedChartTitles[index].title);
 
     if (editedChartTitle != null) {
-      chartTitleModel.title = editedChartTitle;
-      _chartTitleBox.put(chartTitleModel.id, chartTitleModel);
-      _sortedChartTitles[index] = chartTitleModel;
+      _sortedChartTitles[index].title = editedChartTitle;
+      _sortedChartTitles[index].save();
     }
   }
 
@@ -96,17 +109,21 @@ class _ChartTitlesState extends State<ChartTitles> {
           valueListenable: _chartTitleBox.listenable(),
           builder: (context, box, widget) {
             return Center(
-              child: ListView.builder(
-                  itemCount: _sortedChartTitles.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _ChartTitleCard(
-                      index: index,
-                      title: _sortedChartTitles[index].title,
-                      editButtonOnPressed: () => _editChartTitle(index),
-                      deleteButtonOnPressed: () => _deleteChartTitle(index),
-                      cardOnTap: () => _navChartSummary(index, context),
-                    );
-                  }),
+              child: ReorderableListView.builder(
+                itemCount: _sortedChartTitles.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _ChartTitleCard(
+                    key: Key(_sortedChartTitles[index].id),
+                    index: index,
+                    title: _sortedChartTitles[index].title,
+                    editButtonOnPressed: () => _editChartTitle(index),
+                    deleteButtonOnPressed: () => _deleteChartTitle(index),
+                    cardOnTap: () => _navChartSummary(index, context),
+                  );
+                },
+                onReorder: (oldIndex, newIndex) =>
+                    _reorderChartTitles(oldIndex, newIndex),
+              ),
             );
           }),
 
@@ -130,6 +147,7 @@ class _ChartTitleCard extends StatelessWidget {
   final VoidCallback cardOnTap;
 
   const _ChartTitleCard({
+    super.key,
     required this.index,
     required this.title,
     required this.editButtonOnPressed,
@@ -140,18 +158,22 @@ class _ChartTitleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      key: key,
       child: ListTile(
         title: Text(title),
-        trailing: Wrap(children: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: editButtonOnPressed,
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: deleteButtonOnPressed,
-          ),
-        ]),
+        trailing: Wrap(
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: editButtonOnPressed,
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: deleteButtonOnPressed,
+            ),
+            SizedBox(width: 10),
+          ],
+        ),
         onTap: cardOnTap,
       ),
     );
