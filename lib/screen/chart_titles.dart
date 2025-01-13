@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
+import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 
 class ChartTitles extends StatefulWidget {
   const ChartTitles({super.key, required this.title});
@@ -16,48 +17,67 @@ class ChartTitles extends StatefulWidget {
 }
 
 class _ChartTitlesState extends State<ChartTitles> {
-  late final Box _chartTitleBox;
+  late final Box<ChartTitleModel> _chartTitleBox;
   late final Box _chartDetailBox;
+
+  late final List<ChartTitleModel> _sortedChartTitles;
 
   @override
   void initState() {
-    _chartTitleBox = KvsUtils.getBox(Collections.chartTitles);
+    _chartTitleBox = KvsUtils.getBox<ChartTitleModel>(Collections.chartTitles);
     _chartDetailBox = KvsUtils.getBox(Collections.chartDetails);
+
+    _sortedChartTitles = List.from(_chartTitleBox.values);
+    sortChartTitles();
+
     super.initState();
+  }
+
+  void sortChartTitles() {
+    _sortedChartTitles.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
   }
 
   /// チャート新規作成
   void _addNewChartTitle() async {
     final String? newChartTitle =
-        await DialogUtils.showEditingDialog(context, '無題');
+        await DialogUtils.showEditingDialog(context, '無題のチャート');
+
     if (newChartTitle != null) {
-      _chartTitleBox.add(newChartTitle);
-      _chartDetailBox.put(newChartTitle, {});
+      ChartTitleModel newChart = ChartTitleModel(newChartTitle);
+      newChart.orderIndex = _chartTitleBox.length;
+      _sortedChartTitles.add(newChart);
+      _chartTitleBox.put(newChart.id, newChart);
+      _chartDetailBox.put(newChart.id, {});
     }
   }
 
   /// チャートタイトルの編集
   void _editChartTitle(int index) async {
-    final String? editedChartTitle = await DialogUtils.showEditingDialog(
-        context, _chartTitleBox.getAt(index).toString());
+    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
+    final String? editedChartTitle =
+        await DialogUtils.showEditingDialog(context, chartTitleModel.title);
+
     if (editedChartTitle != null) {
-      _chartTitleBox.putAt(index, editedChartTitle);
+      chartTitleModel.title = editedChartTitle;
+      _chartTitleBox.put(chartTitleModel.id, chartTitleModel);
+      _sortedChartTitles[index] = chartTitleModel;
     }
   }
 
   /// チャートの削除
   void _deleteChartTitle(int index) {
-    String chartTitle = _chartTitleBox.getAt(index);
-    _chartTitleBox.deleteAt(index);
-    _chartDetailBox.delete(chartTitle);
+    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
+    _sortedChartTitles.removeAt(index);
+    _chartTitleBox.delete(chartTitleModel.id);
+    _chartDetailBox.delete(chartTitleModel.id);
   }
 
   /// チャート詳細に遷移
   void _navChartSummary(int index, BuildContext context) {
     //
     print("on tap card $index");
-    String chartTitle = _chartTitleBox.getAt(index);
-    context.push('/chart_summary', extra: chartTitle);
+    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
+    context.push('/chart_summary', extra: chartTitleModel.id);
   }
 
   // アプリの画面構成と挙動を構成する
@@ -77,11 +97,11 @@ class _ChartTitlesState extends State<ChartTitles> {
           builder: (context, box, widget) {
             return Center(
               child: ListView.builder(
-                  itemCount: _chartTitleBox.length,
+                  itemCount: _sortedChartTitles.length,
                   itemBuilder: (BuildContext context, int index) {
                     return _ChartTitleCard(
                       index: index,
-                      title: _chartTitleBox.getAt(index).toString(),
+                      title: _sortedChartTitles[index].title,
                       editButtonOnPressed: () => _editChartTitle(index),
                       deleteButtonOnPressed: () => _deleteChartTitle(index),
                       cardOnTap: () => _navChartSummary(index, context),

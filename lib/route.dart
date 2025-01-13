@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 import 'package:rta_chart_manager/screen/chart_details.dart';
 import 'package:rta_chart_manager/screen/chart_summary.dart';
 import 'package:rta_chart_manager/screen/chart_titles.dart';
@@ -14,7 +15,7 @@ final router = GoRouter(
     GoRoute(
       path: '/chart_summary',
       builder: (context, state) => ChartSummary(
-        title: state.extra as String,
+        chartTitle: state.extra as ChartTitleModel,
       ),
     ),
     GoRoute(

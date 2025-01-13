@@ -9,11 +9,15 @@ class KvsUtils {
     await Hive.close();
   }
 
-  static Future<Box> openBox(String boxName) {
-    return Hive.openBox(boxName);
+  static Future<Box> openBox<T>(String boxName) {
+    return Hive.openBox<T>(boxName);
   }
 
-  static getBox(String boxName) {
-    return Hive.box(boxName);
+  static getBox<T>(String boxName) {
+    return Hive.box<T>(boxName);
+  }
+
+  static registerAdapter<T>(TypeAdapter adapter) {
+    Hive.registerAdapter(adapter);
   }
 }

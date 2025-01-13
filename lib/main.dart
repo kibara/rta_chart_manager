@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
+import 'package:rta_chart_manager/database/models/chart_summary_model.dart';
+import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 import 'package:rta_chart_manager/route.dart';
 
 /// エントリーポイント
@@ -12,7 +14,10 @@ Future<void> main() async {
 /// KVSの準備
 Future<void> prepareKvs() async {
   await KvsUtils.init();
-  await KvsUtils.openBox(Collections.chartTitles);
+  KvsUtils.registerAdapter<ChartTitleModel>(ChartTitleModelAdapter());
+  await KvsUtils.openBox<ChartTitleModel>(Collections.chartTitles);
+  KvsUtils.registerAdapter<ChartSummaryModel>(ChartSummaryModelAdapter());
+  await KvsUtils.openBox<ChartSummaryModel>(Collections.chartSummary);
   await KvsUtils.openBox(Collections.chartDetails);
 }
 
