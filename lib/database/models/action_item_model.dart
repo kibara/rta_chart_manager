@@ -1,10 +1,10 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/util/id_generator.dart';
 
-part 'chart_title_model.g.dart';
+part 'action_item_model.g.dart';
 
-@HiveType(typeId: 0)
-class ChartTitleModel extends HiveObject {
+@HiveType(typeId: 3)
+class ActionItemModel extends HiveObject {
   @HiveField(0)
   String id = IdGenerator.genUUIDv4();
 
@@ -12,7 +12,10 @@ class ChartTitleModel extends HiveObject {
   int orderIndex;
 
   @HiveField(2)
-  String title;
+  String text;
 
-  ChartTitleModel(this.title, this.orderIndex);
+  @HiveField(3)
+  int iconType;
+
+  ActionItemModel(this.text, this.iconType, this.orderIndex);
 }

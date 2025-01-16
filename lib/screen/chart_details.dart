@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
+import 'package:rta_chart_manager/database/models/chart_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chart_summary_model.dart';
 
 class ChartDetails extends StatefulWidget {
@@ -20,11 +21,12 @@ class _ChartDetailsState extends State<ChartDetails> {
   //     "chart_title": [{ * chart_part1_json * }, { * chart_part2_json * }],
   //     ...
   // }
-  late final Box _chartDetailBox;
+  late final Box<ChartDetailModel> _chartDetailBox;
 
   @override
   void initState() {
-    _chartDetailBox = KvsUtils.getBox(Collections.chartDetails);
+    _chartDetailBox =
+        KvsUtils.getBox<ChartDetailModel>(Collections.chartDetails);
     super.initState();
   }
 

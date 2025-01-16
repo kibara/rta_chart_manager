@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
+import 'package:rta_chart_manager/database/models/chart_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chart_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 
@@ -17,12 +18,7 @@ class ChartSummary extends StatefulWidget {
 }
 
 class _ChartDetailsState extends State<ChartSummary> {
-  // ステートで保持する値
-  // {
-  //     "chart_title": [{ * chart_part1_json * }, { * chart_part2_json * }],
-  //     ...
-  // }
-  late final Box _chartDetailBox;
+  late final Box<ChartDetailModel> _chartDetailBox;
 
   late final Box<ChartSummaryModel> _chartSummaryBox;
   late final List<ChartSummaryModel> _chartSummary;
@@ -30,7 +26,8 @@ class _ChartDetailsState extends State<ChartSummary> {
 
   @override
   void initState() {
-    _chartDetailBox = KvsUtils.getBox(Collections.chartDetails);
+    _chartDetailBox =
+        KvsUtils.getBox<ChartDetailModel>(Collections.chartDetails);
     _chartSummaryBox =
         KvsUtils.getBox<ChartSummaryModel>(Collections.chartSummary);
     _chartTitle = widget.chartTitle.title;
@@ -49,7 +46,14 @@ class _ChartDetailsState extends State<ChartSummary> {
 
     _chartSummary.add(newChartSummaryModel);
     _chartSummaryBox.add(newChartSummaryModel);
-    // TODO: ChartDetailをモデル化したら、ここで空のモデルを作る
+
+    ChartDetailModel newChartDetailModel = ChartDetailModel(
+      widget.chartTitle.id,
+      newChartSummaryModel.id,
+      '無題',
+      _chartDetailBox.values.length,
+    );
+    _chartDetailBox.add(newChartDetailModel);
   }
 
   /// チャート詳細に遷移

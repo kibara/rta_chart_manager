@@ -12,7 +12,7 @@ class ChartSummaryModel extends HiveObject {
   String chartId;
 
   @HiveField(1)
-  int orderIndex = 0;
+  int orderIndex;
 
   @HiveField(2)
   String title;

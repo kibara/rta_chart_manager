@@ -56,8 +56,10 @@ class _ChartTitlesState extends State<ChartTitles> {
         await DialogUtils.showEditingDialog(context, '無題のチャート');
 
     if (newChartTitle != null) {
-      ChartTitleModel newChart = ChartTitleModel(newChartTitle);
-      newChart.orderIndex = _chartTitleBox.length;
+      ChartTitleModel newChart = ChartTitleModel(
+        newChartTitle,
+        _chartTitleBox.length,
+      );
       _sortedChartTitles.add(newChart);
       _chartTitleBox.put(newChart.id, newChart);
     }
