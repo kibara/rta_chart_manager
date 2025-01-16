@@ -17,7 +17,7 @@ class KvsUtils {
     return Hive.box<T>(boxName);
   }
 
-  static registerAdapter<T>(TypeAdapter adapter) {
-    Hive.registerAdapter(adapter);
+  static registerAdapter<T>(TypeAdapter<T> adapter) {
+    Hive.registerAdapter<T>(adapter);
   }
 }
