@@ -135,17 +135,17 @@ class _ChartTitlesState extends State<ChartTitles> {
 class _ChartTitleCard extends StatelessWidget {
   final int index;
   final String title;
-  final VoidCallback editButtonOnPressed;
-  final VoidCallback deleteButtonOnPressed;
-  final VoidCallback cardOnTap;
+  final VoidCallback? editButtonOnPressed;
+  final VoidCallback? deleteButtonOnPressed;
+  final VoidCallback? cardOnTap;
 
   const _ChartTitleCard({
     super.key,
     required this.index,
     required this.title,
-    required this.editButtonOnPressed,
-    required this.deleteButtonOnPressed,
-    required this.cardOnTap,
+    this.editButtonOnPressed,
+    this.deleteButtonOnPressed,
+    this.cardOnTap,
   });
 
   @override
@@ -156,14 +156,16 @@ class _ChartTitleCard extends StatelessWidget {
         title: Text(title),
         trailing: Wrap(
           children: [
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: editButtonOnPressed,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: deleteButtonOnPressed,
-            ),
+            if (editButtonOnPressed != null)
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: editButtonOnPressed,
+              ),
+            if (deleteButtonOnPressed != null)
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: deleteButtonOnPressed,
+              ),
             SizedBox(width: 10),
           ],
         ),
