@@ -18,14 +18,12 @@ class ChartTitles extends StatefulWidget {
 
 class _ChartTitlesState extends State<ChartTitles> {
   late final Box<ChartTitleModel> _chartTitleBox;
-  late final Box _chartDetailBox;
 
   late final List<ChartTitleModel> _sortedChartTitles;
 
   @override
   void initState() {
     _chartTitleBox = KvsUtils.getBox<ChartTitleModel>(Collections.chartTitles);
-    _chartDetailBox = KvsUtils.getBox(Collections.chartDetails);
 
     _sortedChartTitles = List.from(_chartTitleBox.values);
     _sortChartTitles();
@@ -62,7 +60,6 @@ class _ChartTitlesState extends State<ChartTitles> {
       newChart.orderIndex = _chartTitleBox.length;
       _sortedChartTitles.add(newChart);
       _chartTitleBox.put(newChart.id, newChart);
-      _chartDetailBox.put(newChart.id, {});
     }
   }
 
@@ -82,15 +79,11 @@ class _ChartTitlesState extends State<ChartTitles> {
     ChartTitleModel chartTitleModel = _sortedChartTitles[index];
     _sortedChartTitles.removeAt(index);
     _chartTitleBox.delete(chartTitleModel.id);
-    _chartDetailBox.delete(chartTitleModel.id);
   }
 
   /// チャート詳細に遷移
   void _navChartSummary(int index, BuildContext context) {
-    //
-    print("on tap card $index");
-    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
-    context.push('/chart_summary', extra: chartTitleModel.id);
+    context.push('/chart_summary', extra: _sortedChartTitles[index]);
   }
 
   // アプリの画面構成と挙動を構成する
