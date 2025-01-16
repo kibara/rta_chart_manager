@@ -8,7 +8,7 @@ part of 'chart_summary_model.dart';
 
 class ChartSummaryModelAdapter extends TypeAdapter<ChartSummaryModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
   ChartSummaryModel read(BinaryReader reader) {
@@ -17,18 +17,20 @@ class ChartSummaryModelAdapter extends TypeAdapter<ChartSummaryModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ChartSummaryModel(
+      fields[3] as String,
       fields[2] as String,
-    )
-      ..id = fields[0] as String
-      ..orderIndex = fields[1] as int;
+      fields[1] as int,
+    )..id = fields[0] as String;
   }
 
   @override
   void write(BinaryWriter writer, ChartSummaryModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
+      ..writeByte(3)
+      ..write(obj.chartId)
       ..writeByte(1)
       ..write(obj.orderIndex)
       ..writeByte(2)
