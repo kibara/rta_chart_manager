@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class IconType {
-  late final int iconType;
-
   static const int buy = 1; // 買う
   static const int sell = 2; // 売る
   static const int trash = 3; // 捨てる
@@ -19,11 +17,7 @@ class IconType {
   static const int grows = 14; // 育てる
   static const int party = 15; // 編成
 
-  IconType({
-    required this.iconType,
-  });
-
-  Icon getIcon() {
+  static Icon getIcon(int iconType) {
     switch (iconType) {
       case buy:
         return Icon(Icons.shopping_cart, color: Colors.greenAccent);

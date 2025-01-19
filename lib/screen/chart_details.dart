@@ -86,7 +86,8 @@ class _ChartDetailsState extends State<ChartDetails> {
             itemCount: detailModel.actionItems.length,
             itemBuilder: (context, index) {
               return ListTile(
-                leading: Icon(Icons.person_pin_circle),
+                leading:
+                    IconType.getIcon(detailModel.actionItems[index].iconType),
                 title: Text(detailModel.actionItems[index].text),
               );
             },
