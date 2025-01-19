@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
+import 'package:rta_chart_manager/component/icons/icon_type.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
@@ -47,6 +49,22 @@ class _ChartDetailsState extends State<ChartDetails> {
     super.initState();
   }
 
+  void _addActionItem() async {
+    String? actionText = await DialogUtils.showEditingDialog(context, '');
+    if (actionText != null) {
+      ActionItemModel actionItem = ActionItemModel(
+        actionText,
+        IconType.buy,
+        _detailList[currentPage].actionItems.length,
+      );
+
+      setState(() {
+        _detailList[currentPage].actionItems.add(actionItem);
+        _detailList[currentPage].save();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: currentPage);
@@ -65,23 +83,17 @@ class _ChartDetailsState extends State<ChartDetails> {
               _detailList.where((d) => d.orderIndex == index).first;
 
           return ListView.builder(
-              itemCount: detailModel.actionItems.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.person_pin_circle),
-                  title: Text(detailModel!.actionItems[index].text),
-                );
-              });
+            itemCount: detailModel.actionItems.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: Icon(Icons.person_pin_circle),
+                title: Text(detailModel.actionItems[index].text),
+              );
+            },
+          );
         },
       )),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        ActionItemModel actionItem = ActionItemModel('み', 1, 0);
-
-        setState(() {
-          _detailList[currentPage].actionItems.add(actionItem);
-          _detailList[currentPage].save();
-        });
-      }),
+      floatingActionButton: FloatingActionButton(onPressed: _addActionItem),
     );
   }
 }
