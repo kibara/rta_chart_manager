@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class IconType {
+  // FIXME: 色味はあとで考える
   static const int buy = 1; // 買う
   static const int sell = 2; // 売る
   static const int trash = 3; // 捨てる
