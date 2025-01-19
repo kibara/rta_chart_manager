@@ -18,9 +18,6 @@ class ChartDetailModel extends HiveObject {
   @HiveField(1)
   int orderIndex;
 
-  @HiveField(2)
-  String title;
-
   /// この区間の予定タイム
   @HiveField(4)
   Duration estimateTime = Duration(seconds: 0);
@@ -28,5 +25,5 @@ class ChartDetailModel extends HiveObject {
   @HiveField(5)
   List<ActionItemModel> actionItems = [];
 
-  ChartDetailModel(this.chartId, this.summaryId, this.title, this.orderIndex);
+  ChartDetailModel(this.chartId, this.summaryId, this.orderIndex);
 }

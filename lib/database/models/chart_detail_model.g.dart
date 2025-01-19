@@ -19,7 +19,6 @@ class ChartDetailModelAdapter extends TypeAdapter<ChartDetailModel> {
     return ChartDetailModel(
       fields[3] as String,
       fields[6] as String,
-      fields[2] as String,
       fields[1] as int,
     )
       ..id = fields[0] as String
@@ -30,7 +29,7 @@ class ChartDetailModelAdapter extends TypeAdapter<ChartDetailModel> {
   @override
   void write(BinaryWriter writer, ChartDetailModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(3)
@@ -39,8 +38,6 @@ class ChartDetailModelAdapter extends TypeAdapter<ChartDetailModel> {
       ..write(obj.summaryId)
       ..writeByte(1)
       ..write(obj.orderIndex)
-      ..writeByte(2)
-      ..write(obj.title)
       ..writeByte(4)
       ..write(obj.estimateTime)
       ..writeByte(5)

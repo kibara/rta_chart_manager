@@ -25,6 +25,7 @@ class _ChartDetailsState extends State<ChartDetails> {
   late final List<ChartDetailModel> _detailList;
   late final String _chartId;
   int currentPage = 0;
+  Text currentPageTitle = Text('');
 
   @override
   void initState() {
@@ -47,6 +48,19 @@ class _ChartDetailsState extends State<ChartDetails> {
         List.from(_chartDetailBox.values.where((d) => d.chartId == _chartId));
 
     super.initState();
+  }
+
+  String _getCurrentPageTitle() {
+    return _chartSummaryList
+        .where((s) => s.orderIndex == currentPage)
+        .first
+        .title;
+  }
+
+  void _setCurrentPage(int index) {
+    setState(() {
+      currentPage = index;
+    });
   }
 
   void _addActionItem() async {
@@ -72,26 +86,18 @@ class _ChartDetailsState extends State<ChartDetails> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.chartSummary.title),
+        title: Text(_getCurrentPageTitle()),
       ),
       body: Center(
           child: PageView.builder(
         controller: pageController,
+        onPageChanged: (index) => _setCurrentPage(index),
         itemCount: _detailList.length,
         itemBuilder: (context, index) {
           ChartDetailModel detailModel =
               _detailList.where((d) => d.orderIndex == index).first;
 
-          return ListView.builder(
-            itemCount: detailModel.actionItems.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading:
-                    IconType.getIcon(detailModel.actionItems[index].iconType),
-                title: Text(detailModel.actionItems[index].text),
-              );
-            },
-          );
+          return _DetailPage(actionItems: detailModel.actionItems);
         },
       )),
       floatingActionButton: FloatingActionButton(onPressed: _addActionItem),
@@ -108,6 +114,14 @@ class _DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('abc');
+    return ListView.builder(
+      itemCount: actionItems.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: IconType.getIcon(actionItems[index].iconType),
+          title: Text(actionItems[index].text),
+        );
+      },
+    );
   }
 }

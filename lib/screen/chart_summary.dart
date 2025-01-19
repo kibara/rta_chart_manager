@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chart_detail_model.dart';
@@ -37,23 +38,25 @@ class _ChartDetailsState extends State<ChartSummary> {
     super.initState();
   }
 
-  void _addChartDetail() {
-    ChartSummaryModel newChartSummaryModel = ChartSummaryModel(
-      widget.chartTitle.id,
-      '無題2',
-      _chartSummary.length,
-    );
+  void _addChartDetail() async {
+    String? summaryTitle = await DialogUtils.showEditingDialog(context, '');
+    if (summaryTitle != null) {
+      ChartSummaryModel newChartSummaryModel = ChartSummaryModel(
+        widget.chartTitle.id,
+        summaryTitle,
+        _chartSummary.length,
+      );
 
-    _chartSummary.add(newChartSummaryModel);
-    _chartSummaryBox.add(newChartSummaryModel);
+      _chartSummary.add(newChartSummaryModel);
+      _chartSummaryBox.add(newChartSummaryModel);
 
-    ChartDetailModel newChartDetailModel = ChartDetailModel(
-      widget.chartTitle.id,
-      newChartSummaryModel.id,
-      '無題',
-      _chartDetailBox.values.length,
-    );
-    _chartDetailBox.add(newChartDetailModel);
+      ChartDetailModel newChartDetailModel = ChartDetailModel(
+        widget.chartTitle.id,
+        newChartSummaryModel.id,
+        _chartDetailBox.values.length,
+      );
+      _chartDetailBox.add(newChartDetailModel);
+    }
   }
 
   /// チャート詳細に遷移
