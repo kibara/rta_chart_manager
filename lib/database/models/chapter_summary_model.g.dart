@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'chart_summary_model.dart';
+part of 'chapter_summary_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ChartSummaryModelAdapter extends TypeAdapter<ChartSummaryModel> {
+class ChapterSummaryModelAdapter extends TypeAdapter<ChapterSummaryModel> {
   @override
   final int typeId = 1;
 
   @override
-  ChartSummaryModel read(BinaryReader reader) {
+  ChapterSummaryModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ChartSummaryModel(
+    return ChapterSummaryModel(
       fields[3] as String,
       fields[2] as String,
       fields[1] as int,
@@ -24,7 +24,7 @@ class ChartSummaryModelAdapter extends TypeAdapter<ChartSummaryModel> {
   }
 
   @override
-  void write(BinaryWriter writer, ChartSummaryModel obj) {
+  void write(BinaryWriter writer, ChapterSummaryModel obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
@@ -43,7 +43,7 @@ class ChartSummaryModelAdapter extends TypeAdapter<ChartSummaryModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ChartSummaryModelAdapter &&
+      other is ChapterSummaryModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

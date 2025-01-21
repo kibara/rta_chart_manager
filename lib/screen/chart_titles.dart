@@ -84,8 +84,8 @@ class _ChartTitlesState extends State<ChartTitles> {
   }
 
   /// チャート詳細に遷移
-  void _navChartSummary(int index, BuildContext context) {
-    context.push('/chart_summary', extra: _sortedChartTitles[index]);
+  void _navChapterSummary(int index, BuildContext context) {
+    context.push('/chapter_summary', extra: _sortedChartTitles[index]);
   }
 
   // アプリの画面構成と挙動を構成する
@@ -113,7 +113,7 @@ class _ChartTitlesState extends State<ChartTitles> {
                     title: _sortedChartTitles[index].title,
                     editButtonOnPressed: () => _editChartTitle(index),
                     deleteButtonOnPressed: () => _deleteChartTitle(index),
-                    cardOnTap: () => _navChartSummary(index, context),
+                    cardOnTap: () => _navChapterSummary(index, context),
                   );
                 },
                 onReorder: (oldIndex, newIndex) =>

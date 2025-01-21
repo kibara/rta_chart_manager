@@ -1,10 +1,10 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/util/id_generator.dart';
 
-part 'chart_summary_model.g.dart';
+part 'chapter_summary_model.g.dart';
 
 @HiveType(typeId: 1)
-class ChartSummaryModel extends HiveObject {
+class ChapterSummaryModel extends HiveObject {
   @HiveField(0)
   String id = IdGenerator.genUUIDv4();
 
@@ -17,5 +17,5 @@ class ChartSummaryModel extends HiveObject {
   @HiveField(2)
   String title;
 
-  ChartSummaryModel(this.chartId, this.title, this.orderIndex);
+  ChapterSummaryModel(this.chartId, this.title, this.orderIndex);
 }

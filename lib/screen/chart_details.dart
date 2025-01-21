@@ -6,12 +6,12 @@ import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
 import 'package:rta_chart_manager/database/models/chart_detail_model.dart';
-import 'package:rta_chart_manager/database/models/chart_summary_model.dart';
+import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 
 class ChartDetails extends StatefulWidget {
-  const ChartDetails({super.key, required this.chartSummary});
+  const ChartDetails({super.key, required this.chapterSummary});
 
-  final ChartSummaryModel chartSummary;
+  final ChapterSummaryModel chapterSummary;
 
   // ステートを定義する
   @override
@@ -19,9 +19,9 @@ class ChartDetails extends StatefulWidget {
 }
 
 class _ChartDetailsState extends State<ChartDetails> {
-  late final Box<ChartSummaryModel> _chartSummaryBox;
+  late final Box<ChapterSummaryModel> _chapterSummaryBox;
   late final Box<ChartDetailModel> _chartDetailBox;
-  late final List<ChartSummaryModel> _chartSummaryList;
+  late final List<ChapterSummaryModel> _chapterSummaryList;
   late final List<ChartDetailModel> _detailList;
   late final String _chartId;
   int currentPage = 0;
@@ -30,16 +30,16 @@ class _ChartDetailsState extends State<ChartDetails> {
   @override
   void initState() {
     // chartId
-    _chartId = widget.chartSummary.chartId;
+    _chartId = widget.chapterSummary.chartId;
 
     // currentPage
-    currentPage = widget.chartSummary.orderIndex;
+    currentPage = widget.chapterSummary.orderIndex;
 
-    // chartSummary
-    _chartSummaryBox =
-        KvsUtils.getBox<ChartSummaryModel>(Collections.chartSummary);
-    _chartSummaryList =
-        List.from(_chartSummaryBox.values.where((s) => s.chartId == _chartId));
+    // chapterSummary
+    _chapterSummaryBox =
+        KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
+    _chapterSummaryList = List.from(
+        _chapterSummaryBox.values.where((s) => s.chartId == _chartId));
 
     // chartDetail
     _chartDetailBox =
@@ -51,7 +51,7 @@ class _ChartDetailsState extends State<ChartDetails> {
   }
 
   String _getCurrentPageTitle() {
-    return _chartSummaryList
+    return _chapterSummaryList
         .where((s) => s.orderIndex == currentPage)
         .first
         .title;
