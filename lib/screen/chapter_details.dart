@@ -5,24 +5,24 @@ import 'package:rta_chart_manager/component/icons/icon_type.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
-import 'package:rta_chart_manager/database/models/chart_detail_model.dart';
+import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 
-class ChartDetails extends StatefulWidget {
-  const ChartDetails({super.key, required this.chapterSummary});
+class ChapterDetails extends StatefulWidget {
+  const ChapterDetails({super.key, required this.chapterSummary});
 
   final ChapterSummaryModel chapterSummary;
 
   // ステートを定義する
   @override
-  State<ChartDetails> createState() => _ChartDetailsState();
+  State<ChapterDetails> createState() => _ChapterDetailsState();
 }
 
-class _ChartDetailsState extends State<ChartDetails> {
+class _ChapterDetailsState extends State<ChapterDetails> {
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
-  late final Box<ChartDetailModel> _chartDetailBox;
+  late final Box<ChapterDetailModel> _chapterDetailBox;
   late final List<ChapterSummaryModel> _chapterSummaryList;
-  late final List<ChartDetailModel> _detailList;
+  late final List<ChapterDetailModel> _detailList;
   late final String _chartId;
   int currentPage = 0;
   Text currentPageTitle = Text('');
@@ -41,11 +41,11 @@ class _ChartDetailsState extends State<ChartDetails> {
     _chapterSummaryList = List.from(
         _chapterSummaryBox.values.where((s) => s.chartId == _chartId));
 
-    // chartDetail
-    _chartDetailBox =
-        KvsUtils.getBox<ChartDetailModel>(Collections.chartDetails);
+    // chapterDetail
+    _chapterDetailBox =
+        KvsUtils.getBox<ChapterDetailModel>(Collections.chapterDetails);
     _detailList =
-        List.from(_chartDetailBox.values.where((d) => d.chartId == _chartId));
+        List.from(_chapterDetailBox.values.where((d) => d.chartId == _chartId));
 
     super.initState();
   }
@@ -94,7 +94,7 @@ class _ChartDetailsState extends State<ChartDetails> {
         onPageChanged: (index) => _setCurrentPage(index),
         itemCount: _detailList.length,
         itemBuilder: (context, index) {
-          ChartDetailModel detailModel =
+          ChapterDetailModel detailModel =
               _detailList.where((d) => d.orderIndex == index).first;
 
           return _DetailPage(actionItems: detailModel.actionItems);

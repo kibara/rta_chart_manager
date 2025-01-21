@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
-import 'package:rta_chart_manager/database/models/chart_detail_model.dart';
+import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 
@@ -15,11 +15,11 @@ class ChapterSummary extends StatefulWidget {
 
   // ステートを定義する
   @override
-  State<ChapterSummary> createState() => _ChartDetailsState();
+  State<ChapterSummary> createState() => _ChapterDetailsState();
 }
 
-class _ChartDetailsState extends State<ChapterSummary> {
-  late final Box<ChartDetailModel> _chartDetailBox;
+class _ChapterDetailsState extends State<ChapterSummary> {
+  late final Box<ChapterDetailModel> _chapterDetailBox;
 
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
   late final List<ChapterSummaryModel> _chapterSummary;
@@ -27,8 +27,8 @@ class _ChartDetailsState extends State<ChapterSummary> {
 
   @override
   void initState() {
-    _chartDetailBox =
-        KvsUtils.getBox<ChartDetailModel>(Collections.chartDetails);
+    _chapterDetailBox =
+        KvsUtils.getBox<ChapterDetailModel>(Collections.chapterDetails);
     _chapterSummaryBox =
         KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
     _chartTitle = widget.chartTitle.title;
@@ -38,7 +38,7 @@ class _ChartDetailsState extends State<ChapterSummary> {
     super.initState();
   }
 
-  void _addChartDetail() async {
+  void _addChapterDetail() async {
     String? summaryTitle = await DialogUtils.showEditingDialog(context, '');
     if (summaryTitle != null) {
       ChapterSummaryModel newChapterSummaryModel = ChapterSummaryModel(
@@ -50,18 +50,18 @@ class _ChartDetailsState extends State<ChapterSummary> {
       _chapterSummary.add(newChapterSummaryModel);
       _chapterSummaryBox.add(newChapterSummaryModel);
 
-      ChartDetailModel newChartDetailModel = ChartDetailModel(
+      ChapterDetailModel newChapterDetailModel = ChapterDetailModel(
         widget.chartTitle.id,
         newChapterSummaryModel.id,
-        _chartDetailBox.values.length,
+        _chapterDetailBox.values.length,
       );
-      _chartDetailBox.add(newChartDetailModel);
+      _chapterDetailBox.add(newChapterDetailModel);
     }
   }
 
   /// チャート詳細に遷移
-  void _navChartDetail(int index, BuildContext context) {
-    context.push('/chart_detail', extra: _chapterSummary[index]);
+  void _navChapterDetail(int index, BuildContext context) {
+    context.push('/chapter_detail', extra: _chapterSummary[index]);
   }
 
   @override
@@ -91,7 +91,7 @@ class _ChartDetailsState extends State<ChapterSummary> {
                         onPressed: () => {},
                       ),
                     ]),
-                    onTap: () => _navChartDetail(index, context),
+                    onTap: () => _navChapterDetail(index, context),
                   ),
                 );
               },
@@ -100,7 +100,7 @@ class _ChartDetailsState extends State<ChapterSummary> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addChartDetail,
+        onPressed: _addChapterDetail,
         tooltip: '新規作成',
         child: const Icon(Icons.add),
       ),

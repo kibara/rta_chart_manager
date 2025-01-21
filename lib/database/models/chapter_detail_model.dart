@@ -2,10 +2,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/util/id_generator.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
 
-part 'chart_detail_model.g.dart';
+part 'chapter_detail_model.g.dart';
 
 @HiveType(typeId: 2)
-class ChartDetailModel extends HiveObject {
+class ChapterDetailModel extends HiveObject {
   @HiveField(0)
   String id = IdGenerator.genUUIDv4();
 
@@ -25,5 +25,5 @@ class ChartDetailModel extends HiveObject {
   @HiveField(5)
   List<ActionItemModel> actionItems = [];
 
-  ChartDetailModel(this.chartId, this.summaryId, this.orderIndex);
+  ChapterDetailModel(this.chartId, this.summaryId, this.orderIndex);
 }
