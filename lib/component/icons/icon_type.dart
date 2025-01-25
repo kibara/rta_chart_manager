@@ -18,6 +18,8 @@ class IconType {
   static const int grows = 14; // 育てる
   static const int party = 15; // 編成
 
+  static const int section = 99; // セクションタイトル
+
   static Icon getIcon(int iconType) {
     switch (iconType) {
       case buy:
@@ -50,6 +52,8 @@ class IconType {
         return Icon(Icons.upgrade, color: Colors.greenAccent);
       case party:
         return Icon(Icons.group_add, color: Colors.greenAccent);
+      case section:
+        return Icon(Icons.folder, color: Colors.black);
       default:
         return Icon(Icons.abc);
     }
