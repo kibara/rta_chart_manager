@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum IconType {
+enum ActionType {
   section(99, 'セクション'),
   buy(1, '買う'),
   sell(2, '売る'),
@@ -19,36 +19,33 @@ enum IconType {
   party(15, '編成'),
   ;
 
-  const IconType(this.id, this.displayName);
+  const ActionType(this.id, this.displayName);
 
   final int id;
   final String displayName;
 
-  static List<String> getIconIdList() {
-    return IconType.values.map((v) => v.id.toString()).toList();
-  }
-
   static List<DropdownMenuItem> getDropdownMenuItemList() {
-    return IconType.values
+    return ActionType.values
         .map((v) => DropdownMenuItem(
             value: v.id,
             child: Row(
               spacing: 8.0,
               children: [
-                IconType.getIcon(v),
+                ActionType.getIcon(v),
                 Text(v.displayName),
               ],
             )))
         .toList();
   }
 
-  static Icon getIconByInt(int iconType) {
-    return getIcon(IconType.values.where((v) => v.id == iconType).firstOrNull ??
-        IconType.section);
+  static Icon getIconByInt(int actionType) {
+    return getIcon(
+        ActionType.values.where((v) => v.id == actionType).firstOrNull ??
+            ActionType.section);
   }
 
-  static Icon getIcon(IconType iconType) {
-    switch (iconType) {
+  static Icon getIcon(ActionType actionType) {
+    switch (actionType) {
       case section:
         return Icon(Icons.folder, color: Colors.black);
 

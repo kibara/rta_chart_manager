@@ -34,7 +34,7 @@ class ActionItemModelAdapter extends TypeAdapter<ActionItemModel> {
       ..writeByte(2)
       ..write(obj.text)
       ..writeByte(3)
-      ..write(obj.iconType);
+      ..write(obj.actionType);
   }
 
   @override

@@ -15,7 +15,7 @@ class ActionItemModel extends HiveObject {
   String text;
 
   @HiveField(3)
-  int iconType;
+  int actionType;
 
-  ActionItemModel(this.text, this.iconType, this.orderIndex);
+  ActionItemModel(this.text, this.actionType, this.orderIndex);
 }

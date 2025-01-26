@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
-import 'package:rta_chart_manager/component/icons/icon_type.dart';
+import 'package:rta_chart_manager/component/icons/action_type.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
@@ -67,7 +67,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
     List<String>? inputAction = await DialogUtils.showTitleAndSelectionDialog(
       context,
       'やること',
-      IconType.getDropdownMenuItemList(),
+      ActionType.getDropdownMenuItemList(),
     );
 
     if (inputAction != null) {
@@ -123,7 +123,7 @@ class _DetailPage extends StatelessWidget {
       itemCount: actionItems.length,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: IconType.getIconByInt(actionItems[index].iconType),
+          leading: ActionType.getIconByInt(actionItems[index].actionType),
           title: Text(actionItems[index].text),
         );
       },
