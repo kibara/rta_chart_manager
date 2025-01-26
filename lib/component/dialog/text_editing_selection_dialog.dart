@@ -49,12 +49,6 @@ class _TextEditingSelectionDialogState
     );
   }
 
-  // List<DropdownMenuItem> _convertListToMenuItem() {
-  //   return widget.selection
-  //       .map((i) => DropdownMenuItem(value: i, child: Text(i.name)))
-  //       .toList();
-  // }
-
   void _onSelectionChanged(int? value) {
     if (value != null) {
       setState(() {
@@ -67,6 +61,7 @@ class _TextEditingSelectionDialogState
   Widget build(BuildContext context) {
     return AlertDialog(
       content: Column(
+        spacing: 12.0,
         mainAxisSize: MainAxisSize.min,
         children: [
           DropdownButtonFormField(
@@ -87,7 +82,6 @@ class _TextEditingSelectionDialogState
       actions: [
         TextButton(
           onPressed: () {
-            // String itemName = selectedItem != null ? selectedItem!.name : '';
             Navigator.of(context)
                 .pop([controller.text, selectedItem.toString()]);
           },

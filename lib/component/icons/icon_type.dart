@@ -31,9 +31,14 @@ enum IconType {
   static List<DropdownMenuItem> getDropdownMenuItemList() {
     return IconType.values
         .map((v) => DropdownMenuItem(
-              value: v.id,
-              child: Text(v.displayName),
-            ))
+            value: v.id,
+            child: Row(
+              spacing: 8.0,
+              children: [
+                IconType.getIcon(v),
+                Text(v.displayName),
+              ],
+            )))
         .toList();
   }
 
