@@ -1,27 +1,52 @@
 import 'package:flutter/material.dart';
 
-class IconType {
-  // FIXME: 色味はあとで考える
-  static const int buy = 1; // 買う
-  static const int sell = 2; // 売る
-  static const int trash = 3; // 捨てる
-  static const int move = 4; // 移動
-  static const int buttle = 5; // 戦う
-  static const int escape = 6; // 逃げる
-  static const int equip = 7; // 装備する
-  static const int pick = 8; // 拾う
-  static const int recovery = 9; // 回復する
-  static const int damage = 10; // ダメージを喰らう
-  static const int event = 11; // イベントを起動する
-  static const int talk = 12; // イベントを起動する
-  static const int smith = 13; // 鍛治
-  static const int grows = 14; // 育てる
-  static const int party = 15; // 編成
+enum IconType {
+  section(99, 'セクション'),
+  buy(1, '買う'),
+  sell(2, '売る'),
+  trash(3, '捨てる'),
+  move(4, '移動'),
+  buttle(5, '戦闘'),
+  escape(6, '逃走'),
+  equip(7, '装備'),
+  pick(8, '宝箱'),
+  recovery(9, '回復'),
+  damage(10, 'HP調整'),
+  event(11, 'イベント起動'),
+  talk(12, '会話'),
+  smith(13, '鍛治'),
+  grows(14, '育成'),
+  party(15, '編成'),
+  ;
 
-  static const int section = 99; // セクションタイトル
+  const IconType(this.id, this.displayName);
 
-  static Icon getIcon(int iconType) {
+  final int id;
+  final String displayName;
+
+  static List<String> getIconIdList() {
+    return IconType.values.map((v) => v.id.toString()).toList();
+  }
+
+  static List<DropdownMenuItem> getDropdownMenuItemList() {
+    return IconType.values
+        .map((v) => DropdownMenuItem(
+              value: v.id,
+              child: Text(v.displayName),
+            ))
+        .toList();
+  }
+
+  static Icon getIconByInt(int iconType) {
+    return getIcon(IconType.values.where((v) => v.id == iconType).firstOrNull ??
+        IconType.section);
+  }
+
+  static Icon getIcon(IconType iconType) {
     switch (iconType) {
+      case section:
+        return Icon(Icons.folder, color: Colors.black);
+
       case buy:
         return Icon(Icons.shopping_cart, color: Colors.greenAccent);
       case sell:
@@ -52,10 +77,6 @@ class IconType {
         return Icon(Icons.upgrade, color: Colors.greenAccent);
       case party:
         return Icon(Icons.group_add, color: Colors.greenAccent);
-      case section:
-        return Icon(Icons.folder, color: Colors.black);
-      default:
-        return Icon(Icons.abc);
     }
   }
 }
