@@ -64,11 +64,16 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   }
 
   void _addActionItem() async {
-    String? actionText = await DialogUtils.showEditingDialog(context, '');
-    if (actionText != null) {
+    List<String>? inputAction = await DialogUtils.showTitleAndSelectionDialog(
+      context,
+      'やること',
+      IconType.getDropdownMenuItemList(),
+    );
+
+    if (inputAction != null) {
       ActionItemModel actionItem = ActionItemModel(
-        actionText,
-        IconType.buy,
+        inputAction[0],
+        int.parse(inputAction[1]),
         _detailList[currentPage].actionItems.length,
       );
 
@@ -118,7 +123,7 @@ class _DetailPage extends StatelessWidget {
       itemCount: actionItems.length,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: IconType.getIcon(actionItems[index].iconType),
+          leading: IconType.getIconByInt(actionItems[index].iconType),
           title: Text(actionItems[index].text),
         );
       },
