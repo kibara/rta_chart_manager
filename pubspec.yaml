@@ -37,7 +37,7 @@ dependencies:
   go_router: ^14.6.3
   hive_flutter: ^1.1.0
   uuid: ^4.5.1
-  flutter_picker: ^2.1.0
+  flutter_datetime_picker_plus: ^2.2.0
 
 dev_dependencies:
   flutter_test:
