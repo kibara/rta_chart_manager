@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
+import 'package:rta_chart_manager/component/extension/datetime_extension.dart';
+import 'package:rta_chart_manager/component/extension/duration_extension.dart';
 import 'package:rta_chart_manager/component/icons/action_type.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 class ChapterDetails extends StatefulWidget {
   const ChapterDetails({super.key, required this.chapterSummary});
@@ -46,6 +49,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         KvsUtils.getBox<ChapterDetailModel>(Collections.chapterDetails);
     _detailList =
         List.from(_chapterDetailBox.values.where((d) => d.chartId == _chartId));
+    _detailList.sort((a, b) => a.orderIndex > b.orderIndex ? 1 : -1);
 
     super.initState();
   }
@@ -93,40 +97,67 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_getCurrentPageTitle()),
       ),
-      body: Center(
-          child: PageView.builder(
-        controller: pageController,
-        onPageChanged: (index) => _setCurrentPage(index),
-        itemCount: _detailList.length,
-        itemBuilder: (context, index) {
-          ChapterDetailModel detailModel =
-              _detailList.where((d) => d.orderIndex == index).first;
-
-          return _DetailPage(actionItems: detailModel.actionItems);
-        },
-      )),
+      body: ValueListenableBuilder(
+          valueListenable: _chapterDetailBox.listenable(),
+          builder: (context, box, widget) => PageView.builder(
+                controller: pageController,
+                onPageChanged: (index) => _setCurrentPage(index),
+                itemCount: _detailList.length,
+                itemBuilder: (context, index) {
+                  return _DetailPage(chapter: _detailList[index]);
+                },
+              )),
       floatingActionButton: FloatingActionButton(onPressed: _addActionItem),
     );
   }
 }
 
 class _DetailPage extends StatelessWidget {
-  final List<ActionItemModel> actionItems;
+  final ChapterDetailModel chapter;
 
-  const _DetailPage({
-    required this.actionItems,
-  });
+  const _DetailPage({required this.chapter});
+
+  void _editEstimateTime(BuildContext context) {
+    DatePicker.showTimePicker(
+      context,
+      showTitleActions: true,
+      showSecondsColumn: true,
+      onConfirm: (date) {
+        chapter.estimateTime = date.conv2Duration();
+        chapter.save();
+      },
+      currentTime: chapter.estimateTime.conv2Datetime(),
+      locale: LocaleType.en,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: actionItems.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: ActionType.getIconByInt(actionItems[index].actionType),
-          title: Text(actionItems[index].text),
-        );
-      },
+    return Column(
+      children: [
+        // 区間予定タイム
+        ListTile(
+          leading: Icon(Icons.timer_outlined),
+          title: Text('区間予定タイム ${chapter.estimateTime}'),
+          trailing: IconButton(
+              onPressed: () => _editEstimateTime(context),
+              icon: Icon(Icons.edit_outlined)),
+        ),
+        // TODO: 区間実績タイム
+        // アクションアイテムリスト
+        Flexible(
+          child: ListView.builder(
+            itemCount: chapter.actionItems.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: ActionType.getIconByInt(
+                    chapter.actionItems[index].actionType),
+                title: Text(chapter.actionItems[index].text),
+              );
+            },
+          ),
+        )
+      ],
     );
   }
 }
