@@ -109,7 +109,11 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                   return _DetailPage(chapter: _detailMap[currentSummaryId]!);
                 },
               )),
-      floatingActionButton: FloatingActionButton(onPressed: _addActionItem),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'アクション追加',
+        onPressed: _addActionItem,
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

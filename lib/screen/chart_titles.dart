@@ -125,7 +125,7 @@ class _ChartTitlesState extends State<ChartTitles> {
       // フローティングボタン
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewChartTitle,
-        tooltip: '新規作成',
+        tooltip: 'チャート作成',
         child: const Icon(Icons.add),
       ),
     );

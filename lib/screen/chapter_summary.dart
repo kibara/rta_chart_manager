@@ -132,7 +132,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addChapterDetail,
-        tooltip: '新規作成',
+        tooltip: 'チャプター作成',
         child: const Icon(Icons.add),
       ),
     );
