@@ -137,6 +137,20 @@ class _DetailPage extends StatelessWidget {
     );
   }
 
+  /// アクションアイテムの並び替えイベント
+  void _reorderActionItem(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final ActionItemModel item = chapter.actionItems.removeAt(oldIndex);
+    chapter.actionItems.insert(newIndex, item);
+
+    for (var i = 0; i < chapter.actionItems.length; i++) {
+      chapter.actionItems[i].orderIndex = i;
+    }
+    chapter.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -153,12 +167,13 @@ class _DetailPage extends StatelessWidget {
         // TODO: 区間実績タイム
         // アクションアイテムリスト
         Flexible(
-          child: ListView.builder(
+          child: ReorderableListView.builder(
             itemCount: chapter.actionItems.length,
             itemBuilder: (context, index) {
               var actionItem = chapter.actionItems[index];
               if (actionItem.actionType == ActionType.section.id) {
                 return ListTile(
+                  key: Key(actionItem.id),
                   leading: ActionType.getIconByInt(actionItem.actionType),
                   title: Text(actionItem.text),
                   titleTextStyle: TextStyle(fontSize: 20),
@@ -167,12 +182,15 @@ class _DetailPage extends StatelessWidget {
                 );
               } else {
                 return ListTile(
+                  key: Key(actionItem.id),
                   leading: ActionType.getIconByInt(actionItem.actionType),
                   title: Text(actionItem.text),
                   titleTextStyle: TextStyle(fontSize: 16),
                 );
               }
             },
+            onReorder: (int oldIndex, int newIndex) =>
+                _reorderActionItem(oldIndex, newIndex),
           ),
         )
       ],
