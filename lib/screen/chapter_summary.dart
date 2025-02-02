@@ -42,7 +42,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
   /// チャプターの追加
   void _addChapterDetail() async {
     String? summaryTitle = await DialogUtils.showEditingDialog(
-        context, 'part ${_chapterSummary.length + 1}');
+        context, 'chapter ${_chapterSummary.length + 1}');
     if (summaryTitle != null) {
       ChapterSummaryModel newChapterSummaryModel = ChapterSummaryModel(
         widget.chartTitle.id,
