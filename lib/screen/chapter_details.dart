@@ -138,8 +138,9 @@ class _DetailPage extends StatelessWidget {
           leading: Icon(Icons.timer_outlined),
           title: Text('区間予定タイム ${chapter.estimateTime}'),
           trailing: IconButton(
-              onPressed: () => _editEstimateTime(context),
-              icon: Icon(Icons.edit_outlined)),
+            onPressed: () => _editEstimateTime(context),
+            icon: Icon(Icons.edit_outlined),
+          ),
         ),
         // TODO: 区間実績タイム
         // アクションアイテムリスト
@@ -147,11 +148,22 @@ class _DetailPage extends StatelessWidget {
           child: ListView.builder(
             itemCount: chapter.actionItems.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                leading: ActionType.getIconByInt(
-                    chapter.actionItems[index].actionType),
-                title: Text(chapter.actionItems[index].text),
-              );
+              var actionItem = chapter.actionItems[index];
+              if (actionItem.actionType == ActionType.section.id) {
+                return ListTile(
+                  leading: ActionType.getIconByInt(actionItem.actionType),
+                  title: Text(actionItem.text),
+                  titleTextStyle: TextStyle(fontSize: 20),
+                  minVerticalPadding: 16,
+                  tileColor: const Color.fromARGB(200, 255, 240, 200),
+                );
+              } else {
+                return ListTile(
+                  leading: ActionType.getIconByInt(actionItem.actionType),
+                  title: Text(actionItem.text),
+                  titleTextStyle: TextStyle(fontSize: 16),
+                );
+              }
             },
           ),
         )
