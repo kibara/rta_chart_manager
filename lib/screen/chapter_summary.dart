@@ -39,6 +39,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
     super.initState();
   }
 
+  /// チャプターの追加
   void _addChapterDetail() async {
     String? summaryTitle = await DialogUtils.showEditingDialog(
         context, 'part ${_chapterSummary.length + 1}');
@@ -50,17 +51,39 @@ class _ChapterDetailsState extends State<ChapterSummary> {
       );
 
       _chapterSummary.add(newChapterSummaryModel);
-      _chapterSummaryBox.add(newChapterSummaryModel);
+      _chapterSummaryBox.put(newChapterSummaryModel.id, newChapterSummaryModel);
 
       ChapterDetailModel newChapterDetailModel = ChapterDetailModel(
         widget.chartTitle.id,
         newChapterSummaryModel.id,
       );
-      _chapterDetailBox.add(newChapterDetailModel);
+      _chapterDetailBox.put(newChapterDetailModel.id, newChapterDetailModel);
     }
   }
 
-  /// チャートタイトルの並び替えイベント
+  /// チャートタイトルの編集
+  void _editChapterTitle(int index) async {
+    final String? editedChapterTitle = await DialogUtils.showEditingDialog(
+        context, _chapterSummary[index].title);
+
+    if (editedChapterTitle != null) {
+      _chapterSummary[index].title = editedChapterTitle;
+      _chapterSummary[index].save();
+    }
+  }
+
+  /// チャートの削除
+  void _deleteChartTitle(int index) {
+    ChapterSummaryModel chapterSummaryModel = _chapterSummary[index];
+    _chapterSummary.removeAt(index);
+    _chapterSummaryBox.delete(chapterSummaryModel.id);
+    _chapterDetailBox.values
+        .where((v) => v.summaryId == chapterSummaryModel.id)
+        .first
+        .delete();
+  }
+
+  /// チャートサマリの並び替えイベント
   void _reorderChapterTitle(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
       newIndex -= 1;
@@ -93,22 +116,12 @@ class _ChapterDetailsState extends State<ChapterSummary> {
             child: ReorderableListView.builder(
               itemCount: _chapterSummary.length,
               itemBuilder: (context, index) {
-                return Card(
+                return _ChapterSummaryCard(
                   key: Key(_chapterSummary[index].id),
-                  child: ListTile(
-                    title: Text(_chapterSummary[index].title),
-                    trailing: Wrap(children: [
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () => {},
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => {},
-                      ),
-                    ]),
-                    onTap: () => _navChapterDetail(index, context),
-                  ),
+                  chapterSummaryModel: _chapterSummary[index],
+                  editButtonOnPressed: () => _editChapterTitle(index),
+                  deleteButtonOnPressed: () => _deleteChartTitle(index),
+                  cardOnTap: () => _navChapterDetail(index, context),
                 );
               },
               onReorder: (int oldIndex, int newIndex) =>
@@ -121,6 +134,44 @@ class _ChapterDetailsState extends State<ChapterSummary> {
         onPressed: _addChapterDetail,
         tooltip: '新規作成',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class _ChapterSummaryCard extends StatelessWidget {
+  final ChapterSummaryModel chapterSummaryModel;
+  final VoidCallback? editButtonOnPressed;
+  final VoidCallback? deleteButtonOnPressed;
+  final VoidCallback? cardOnTap;
+
+  const _ChapterSummaryCard({
+    super.key,
+    required this.chapterSummaryModel,
+    this.editButtonOnPressed,
+    this.deleteButtonOnPressed,
+    this.cardOnTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      key: key,
+      child: ListTile(
+        title: Text(chapterSummaryModel.title),
+        trailing: Wrap(children: [
+          if (editButtonOnPressed != null)
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: editButtonOnPressed,
+            ),
+          if (deleteButtonOnPressed != null)
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: deleteButtonOnPressed,
+            ),
+        ]),
+        onTap: cardOnTap,
       ),
     );
   }
