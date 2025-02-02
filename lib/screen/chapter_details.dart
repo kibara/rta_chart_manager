@@ -81,10 +81,8 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         _detailList[currentPage].actionItems.length,
       );
 
-      setState(() {
-        _detailList[currentPage].actionItems.add(actionItem);
-        _detailList[currentPage].save();
-      });
+      _detailList[currentPage].actionItems.add(actionItem);
+      _detailList[currentPage].save();
     }
   }
 
