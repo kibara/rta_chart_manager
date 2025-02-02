@@ -170,6 +170,7 @@ class _ChapterSummaryCard extends StatelessWidget {
               icon: Icon(Icons.delete),
               onPressed: deleteButtonOnPressed,
             ),
+          SizedBox(width: 10),
         ]),
         onTap: cardOnTap,
       ),
