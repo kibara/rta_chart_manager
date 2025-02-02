@@ -34,6 +34,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
     _chartTitle = widget.chartTitle.title;
     _chapterSummary = List.from(_chapterSummaryBox.values.where(
         (ChapterSummaryModel model) => model.chartId == widget.chartTitle.id));
+    _chapterSummary.sort((a, b) => a.orderIndex > b.orderIndex ? 1 : -1);
 
     super.initState();
   }
@@ -54,9 +55,22 @@ class _ChapterDetailsState extends State<ChapterSummary> {
       ChapterDetailModel newChapterDetailModel = ChapterDetailModel(
         widget.chartTitle.id,
         newChapterSummaryModel.id,
-        _chapterDetailBox.values.length,
       );
       _chapterDetailBox.add(newChapterDetailModel);
+    }
+  }
+
+  /// チャートタイトルの並び替えイベント
+  void _reorderChapterTitle(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final ChapterSummaryModel item = _chapterSummary.removeAt(oldIndex);
+    _chapterSummary.insert(newIndex, item);
+
+    for (var i = 0; i < _chapterSummary.length; i++) {
+      _chapterSummary[i].orderIndex = i;
+      _chapterSummary[i].save();
     }
   }
 
@@ -76,10 +90,11 @@ class _ChapterDetailsState extends State<ChapterSummary> {
         valueListenable: _chapterSummaryBox.listenable(),
         builder: (context, box, widget) {
           return Center(
-            child: ListView.builder(
+            child: ReorderableListView.builder(
               itemCount: _chapterSummary.length,
               itemBuilder: (context, index) {
                 return Card(
+                  key: Key(_chapterSummary[index].id),
                   child: ListTile(
                     title: Text(_chapterSummary[index].title),
                     trailing: Wrap(children: [
@@ -96,6 +111,8 @@ class _ChapterDetailsState extends State<ChapterSummary> {
                   ),
                 );
               },
+              onReorder: (int oldIndex, int newIndex) =>
+                  _reorderChapterTitle(oldIndex, newIndex),
             ),
           );
         },

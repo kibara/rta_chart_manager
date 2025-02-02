@@ -19,7 +19,6 @@ class ChapterDetailModelAdapter extends TypeAdapter<ChapterDetailModel> {
     return ChapterDetailModel(
       fields[3] as String,
       fields[6] as String,
-      fields[1] as int,
     )
       ..id = fields[0] as String
       ..estimateTime = fields[4] as Duration
@@ -29,15 +28,13 @@ class ChapterDetailModelAdapter extends TypeAdapter<ChapterDetailModel> {
   @override
   void write(BinaryWriter writer, ChapterDetailModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(3)
       ..write(obj.chartId)
       ..writeByte(6)
       ..write(obj.summaryId)
-      ..writeByte(1)
-      ..write(obj.orderIndex)
       ..writeByte(4)
       ..write(obj.estimateTime)
       ..writeByte(5)

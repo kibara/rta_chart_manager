@@ -25,9 +25,10 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
   late final Box<ChapterDetailModel> _chapterDetailBox;
   late final List<ChapterSummaryModel> _chapterSummaryList;
-  late final List<ChapterDetailModel> _detailList;
+  late final Map<String, ChapterDetailModel> _detailMap;
   late final String _chartId;
-  int currentPage = 0;
+  late int currentPage;
+  late String currentSummaryId;
   Text currentPageTitle = Text('');
 
   @override
@@ -37,6 +38,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
 
     // currentPage
     currentPage = widget.chapterSummary.orderIndex;
+    currentSummaryId = widget.chapterSummary.id;
 
     // chapterSummary
     _chapterSummaryBox =
@@ -47,9 +49,11 @@ class _ChapterDetailsState extends State<ChapterDetails> {
     // chapterDetail
     _chapterDetailBox =
         KvsUtils.getBox<ChapterDetailModel>(Collections.chapterDetails);
-    _detailList =
-        List.from(_chapterDetailBox.values.where((d) => d.chartId == _chartId));
-    _detailList.sort((a, b) => a.orderIndex > b.orderIndex ? 1 : -1);
+    _detailMap = {
+      for (var element
+          in _chapterDetailBox.values.where((d) => d.chartId == _chartId))
+        element.summaryId: element
+    };
 
     super.initState();
   }
@@ -64,6 +68,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   void _setCurrentPage(int index) {
     setState(() {
       currentPage = index;
+      currentSummaryId = _chapterSummaryList[currentPage].id;
     });
   }
 
@@ -76,13 +81,12 @@ class _ChapterDetailsState extends State<ChapterDetails> {
 
     if (inputAction != null) {
       ActionItemModel actionItem = ActionItemModel(
-        inputAction[0],
-        int.parse(inputAction[1]),
-        _detailList[currentPage].actionItems.length,
-      );
+          inputAction[0],
+          int.parse(inputAction[1]),
+          _detailMap[currentSummaryId]!.actionItems.length);
 
-      _detailList[currentPage].actionItems.add(actionItem);
-      _detailList[currentPage].save();
+      _detailMap[currentSummaryId]!.actionItems.add(actionItem);
+      _detailMap[currentSummaryId]!.save();
     }
   }
 
@@ -100,9 +104,9 @@ class _ChapterDetailsState extends State<ChapterDetails> {
           builder: (context, box, widget) => PageView.builder(
                 controller: pageController,
                 onPageChanged: (index) => _setCurrentPage(index),
-                itemCount: _detailList.length,
+                itemCount: _detailMap.length,
                 itemBuilder: (context, index) {
-                  return _DetailPage(chapter: _detailList[index]);
+                  return _DetailPage(chapter: _detailMap[currentSummaryId]!);
                 },
               )),
       floatingActionButton: FloatingActionButton(onPressed: _addActionItem),

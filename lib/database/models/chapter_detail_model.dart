@@ -15,9 +15,6 @@ class ChapterDetailModel extends HiveObject {
   @HiveField(6)
   String summaryId;
 
-  @HiveField(1)
-  int orderIndex;
-
   /// この区間の予定タイム
   @HiveField(4)
   Duration estimateTime = Duration(seconds: 0);
@@ -25,5 +22,5 @@ class ChapterDetailModel extends HiveObject {
   @HiveField(5)
   List<ActionItemModel> actionItems = [];
 
-  ChapterDetailModel(this.chartId, this.summaryId, this.orderIndex);
+  ChapterDetailModel(this.chartId, this.summaryId);
 }
