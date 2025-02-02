@@ -23,4 +23,18 @@ extension DurationExtension on Duration {
     // フォーマット
     return "$negativeSign$strHour:$strMin:$strSec.$strMills";
   }
+
+  /// ここでは符号は考えず、絶対値で時刻形式にする
+  DateTime conv2Datetime() {
+    return DateTime.utc(
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      inMicroseconds.abs(),
+    );
+  }
 }
