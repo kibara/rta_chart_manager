@@ -39,17 +39,19 @@ class DialogUtils {
 
   /// 入力した文字列を返すダイアログを表示する
   /// index 0: input text
-  /// index 1: icon type id
+  /// index 1: selection item value
   static Future<List<String>?> showTitleAndSelectionDialog(
     BuildContext context,
-    String text,
+    String selectionText,
+    int selectionValue,
     List<DropdownMenuItem> selections,
   ) async {
     return showDialog<List<String>?>(
       context: context,
       builder: (context) {
         return TextEditingSelectionDialog(
-          text: text,
+          text: selectionText,
+          value: selectionValue,
           selection: selections,
         );
       },

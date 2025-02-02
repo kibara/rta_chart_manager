@@ -76,6 +76,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
     List<String>? inputAction = await DialogUtils.showTitleAndSelectionDialog(
       context,
       'やること',
+      ActionType.section.id,
       ActionType.getDropdownMenuItemList(),
     );
 
@@ -137,6 +138,26 @@ class _DetailPage extends StatelessWidget {
     );
   }
 
+  void _editActionItem(BuildContext context, int index) async {
+    List<String>? inputAction = await DialogUtils.showTitleAndSelectionDialog(
+      context,
+      chapter.actionItems[index].text,
+      chapter.actionItems[index].actionType,
+      ActionType.getDropdownMenuItemList(),
+    );
+
+    if (inputAction != null) {
+      chapter.actionItems[index].text = inputAction[0];
+      chapter.actionItems[index].actionType = int.parse(inputAction[1]);
+      chapter.save();
+    }
+  }
+
+  void _deleteActionItem(int index) {
+    chapter.actionItems.removeAt(index);
+    chapter.save();
+  }
+
   /// アクションアイテムの並び替えイベント
   void _reorderActionItem(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
@@ -171,23 +192,28 @@ class _DetailPage extends StatelessWidget {
             itemCount: chapter.actionItems.length,
             itemBuilder: (context, index) {
               var actionItem = chapter.actionItems[index];
-              if (actionItem.actionType == ActionType.section.id) {
-                return ListTile(
-                  key: Key(actionItem.id),
-                  leading: ActionType.getIconByInt(actionItem.actionType),
-                  title: Text(actionItem.text),
-                  titleTextStyle: TextStyle(fontSize: 20),
-                  minVerticalPadding: 16,
-                  tileColor: const Color.fromARGB(200, 255, 240, 200),
-                );
-              } else {
-                return ListTile(
-                  key: Key(actionItem.id),
-                  leading: ActionType.getIconByInt(actionItem.actionType),
-                  title: Text(actionItem.text),
-                  titleTextStyle: TextStyle(fontSize: 16),
-                );
-              }
+              var isSection = actionItem.actionType == ActionType.section.id;
+
+              return ListTile(
+                key: Key(actionItem.id),
+                leading: ActionType.getIconByInt(actionItem.actionType),
+                title: Text(actionItem.text),
+                titleTextStyle: TextStyle(fontSize: isSection ? 24 : 16),
+                trailing: Wrap(children: [
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () => _editActionItem(context, index),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () => _deleteActionItem(index),
+                  ),
+                  SizedBox(width: 10),
+                ]),
+                minVerticalPadding: isSection ? 8 : 4,
+                tileColor:
+                    isSection ? const Color.fromARGB(200, 255, 240, 200) : null,
+              );
             },
             onReorder: (int oldIndex, int newIndex) =>
                 _reorderActionItem(oldIndex, newIndex),

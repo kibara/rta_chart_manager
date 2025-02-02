@@ -8,10 +8,12 @@ class TextEditingSelectionDialog extends StatefulWidget {
   const TextEditingSelectionDialog({
     super.key,
     this.text,
+    this.value,
     required this.selection,
   });
 
   final String? text;
+  final int? value;
   final List<DropdownMenuItem> selection;
 
   @override
@@ -37,7 +39,7 @@ class _TextEditingSelectionDialogState
     super.initState();
     // TextFormFieldに初期値を代入する
     controller.text = widget.text ?? '';
-    selectedItem = widget.selection.first.value;
+    selectedItem = widget.value ?? 0;
     focusNode.addListener(
       () {
         // フォーカスが当たったときに文字列が選択された状態にする
