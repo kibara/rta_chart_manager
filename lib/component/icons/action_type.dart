@@ -47,38 +47,38 @@ enum ActionType {
   static Icon getIcon(ActionType actionType) {
     switch (actionType) {
       case section:
-        return Icon(Icons.folder, color: Colors.black);
+        return const Icon(Icons.folder, color: Colors.black);
 
       case buy:
-        return Icon(Icons.shopping_cart, color: Colors.greenAccent);
+        return const Icon(Icons.shopping_cart, color: Colors.greenAccent);
       case sell:
-        return Icon(Icons.shopping_cart, color: Colors.redAccent);
+        return const Icon(Icons.shopping_cart, color: Colors.redAccent);
       case trash:
-        return Icon(Icons.delete, color: Colors.grey);
+        return const Icon(Icons.delete, color: Colors.grey);
       case move:
-        return Icon(Icons.flight, color: Colors.lightBlueAccent);
+        return const Icon(Icons.flight, color: Colors.lightBlueAccent);
       case buttle:
-        return Icon(Icons.pets, color: Colors.redAccent);
+        return const Icon(Icons.pets, color: Colors.redAccent);
       case escape:
-        return Icon(Icons.directions_run, color: Colors.redAccent);
+        return const Icon(Icons.directions_run, color: Colors.redAccent);
       case equip:
-        return Icon(Icons.construction, color: Colors.teal);
+        return const Icon(Icons.construction, color: Colors.teal);
       case pick:
-        return Icon(Icons.search, color: Colors.amberAccent);
+        return const Icon(Icons.search, color: Colors.amberAccent);
       case recovery:
-        return Icon(Icons.favorite, color: Colors.greenAccent);
+        return const Icon(Icons.favorite, color: Colors.greenAccent);
       case damage:
-        return Icon(Icons.favorite, color: Colors.redAccent);
+        return const Icon(Icons.favorite, color: Colors.redAccent);
       case event:
-        return Icon(Icons.event, color: Colors.blueGrey);
+        return const Icon(Icons.event, color: Colors.blueGrey);
       case talk:
-        return Icon(Icons.record_voice_over, color: Colors.brown);
+        return const Icon(Icons.record_voice_over, color: Colors.brown);
       case smith:
-        return Icon(Icons.gavel, color: Colors.brown);
+        return const Icon(Icons.gavel, color: Colors.brown);
       case grows:
-        return Icon(Icons.upgrade, color: Colors.greenAccent);
+        return const Icon(Icons.upgrade, color: Colors.greenAccent);
       case party:
-        return Icon(Icons.group_add, color: Colors.greenAccent);
+        return const Icon(Icons.group_add, color: Colors.greenAccent);
     }
   }
 }
