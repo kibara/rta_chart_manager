@@ -16,11 +16,18 @@ Future<void> main() async {
 
 /// KVSの準備
 Future<void> prepareKvs() async {
+  // Hive初期化
   await KvsUtils.init();
+
+  // チャート
   KvsUtils.registerAdapter<ChartTitleModel>(ChartTitleModelAdapter());
   await KvsUtils.openBox<ChartTitleModel>(Collections.chartTitles);
+
+  // チャプターサマリ
   KvsUtils.registerAdapter<ChapterSummaryModel>(ChapterSummaryModelAdapter());
   await KvsUtils.openBox<ChapterSummaryModel>(Collections.chapterSummary);
+
+  // チャプター詳細
   KvsUtils.registerAdapter<ChapterDetailModel>(ChapterDetailModelAdapter());
   KvsUtils.registerAdapter<ActionItemModel>(ActionItemModelAdapter());
   KvsUtils.registerAdapter<Duration>(DurationAdapter());
