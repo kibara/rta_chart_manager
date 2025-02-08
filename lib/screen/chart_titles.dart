@@ -111,6 +111,7 @@ class _ChartTitlesState extends State<ChartTitles> {
                     key: Key(_sortedChartTitles[index].id),
                     index: index,
                     title: _sortedChartTitles[index].title,
+                    playButtonOnPressed: () => print('play'),
                     editButtonOnPressed: () => _editChartTitle(index),
                     deleteButtonOnPressed: () => _deleteChartTitle(index),
                     cardOnTap: () => _navChapterSummary(index, context),
@@ -137,6 +138,7 @@ class _ChartTitlesState extends State<ChartTitles> {
 class _ChartTitleCard extends StatelessWidget {
   final int index;
   final String title;
+  final VoidCallback? playButtonOnPressed;
   final VoidCallback? editButtonOnPressed;
   final VoidCallback? deleteButtonOnPressed;
   final VoidCallback? cardOnTap;
@@ -145,6 +147,7 @@ class _ChartTitleCard extends StatelessWidget {
     super.key,
     required this.index,
     required this.title,
+    required this.playButtonOnPressed,
     this.editButtonOnPressed,
     this.deleteButtonOnPressed,
     this.cardOnTap,
@@ -158,14 +161,19 @@ class _ChartTitleCard extends StatelessWidget {
         title: Text(title),
         trailing: Wrap(
           children: [
+            if (playButtonOnPressed != null)
+              IconButton(
+                icon: const Icon(Icons.play_circle),
+                onPressed: playButtonOnPressed,
+              ),
             if (editButtonOnPressed != null)
               IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: editButtonOnPressed,
               ),
             if (deleteButtonOnPressed != null)
               IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 onPressed: deleteButtonOnPressed,
               ),
             SizedBox(width: 10),
