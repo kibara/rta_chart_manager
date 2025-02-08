@@ -191,14 +191,18 @@ class _DetailPage extends StatelessWidget {
           child: ReorderableListView.builder(
             itemCount: chapter.actionItems.length,
             itemBuilder: (context, index) {
-              var actionItem = chapter.actionItems[index];
-              var isSection = actionItem.actionType == ActionType.section.id;
+              ActionItemModel actionItem = chapter.actionItems[index];
+              bool isSection = actionItem.actionType == ActionType.section.id;
+              double fontSize = isSection ? 24.0 : 16.0;
+              double padding = isSection ? 8.0 : 4.0;
+              Color? titleColor =
+                  isSection ? const Color.fromARGB(200, 255, 240, 200) : null;
 
               return ListTile(
                 key: Key(actionItem.id),
                 leading: ActionType.getIconByInt(actionItem.actionType),
                 title: Text(actionItem.text),
-                titleTextStyle: TextStyle(fontSize: isSection ? 24 : 16),
+                titleTextStyle: TextStyle(fontSize: fontSize),
                 trailing: Wrap(children: [
                   IconButton(
                     icon: Icon(Icons.edit),
@@ -210,9 +214,8 @@ class _DetailPage extends StatelessWidget {
                   ),
                   SizedBox(width: 10),
                 ]),
-                minVerticalPadding: isSection ? 8 : 4,
-                tileColor:
-                    isSection ? const Color.fromARGB(200, 255, 240, 200) : null,
+                minVerticalPadding: padding,
+                tileColor: titleColor,
               );
             },
             onReorder: (int oldIndex, int newIndex) =>
