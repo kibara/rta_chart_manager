@@ -17,7 +17,7 @@ class ChapterDetailModel extends HiveObject {
 
   /// この区間の予定タイム
   @HiveField(4)
-  Duration estimateTime = Duration(seconds: 0);
+  Duration estimateTime = Duration(minutes: 1);
 
   @HiveField(5)
   List<ActionItemModel> actionItems = [];
