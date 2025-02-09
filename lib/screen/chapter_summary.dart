@@ -99,7 +99,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
 
   /// チャート詳細に遷移
   void _navChapterDetail(int index, BuildContext context) {
-    context.push('/chapter_detail', extra: _chapterSummary[index]);
+    context.push('/chapter_detail', extra: (_chapterSummary[index], true));
   }
 
   @override

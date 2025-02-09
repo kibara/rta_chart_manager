@@ -21,9 +21,14 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/chapter_detail',
-      builder: (context, state) => ChapterDetails(
-        chapterSummary: state.extra as ChapterSummaryModel,
-      ),
+      builder: (context, state) {
+        final (summary, editMode) = state.extra as (ChapterSummaryModel, bool);
+
+        return ChapterDetails(
+          chapterSummary: summary,
+          isEditMode: editMode,
+        );
+      },
     ),
   ],
 );

@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
+import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 
 class ChartTitles extends StatefulWidget {
@@ -18,12 +19,15 @@ class ChartTitles extends StatefulWidget {
 
 class _ChartTitlesState extends State<ChartTitles> {
   late final Box<ChartTitleModel> _chartTitleBox;
+  late final Box<ChapterSummaryModel> _chapterSummaryBox;
 
   late final List<ChartTitleModel> _sortedChartTitles;
 
   @override
   void initState() {
     _chartTitleBox = KvsUtils.getBox<ChartTitleModel>(Collections.chartTitles);
+    _chapterSummaryBox =
+        KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
 
     _sortedChartTitles = List.from(_chartTitleBox.values);
     _sortChartTitles();
@@ -88,6 +92,18 @@ class _ChartTitlesState extends State<ChartTitles> {
     context.push('/chapter_summary', extra: _sortedChartTitles[index]);
   }
 
+  /// チャートをプレイする
+  void _playChart(int index) {
+    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
+    ChapterSummaryModel? firstChapter = _chapterSummaryBox.values
+        .where((s) => s.chartId == chartTitleModel.id && s.orderIndex == 0)
+        .firstOrNull;
+
+    if (firstChapter != null) {
+      context.push('/chapter_detail', extra: (firstChapter, false));
+    }
+  }
+
   // アプリの画面構成と挙動を構成する
   @override
   Widget build(BuildContext context) {
@@ -111,7 +127,7 @@ class _ChartTitlesState extends State<ChartTitles> {
                     key: Key(_sortedChartTitles[index].id),
                     index: index,
                     title: _sortedChartTitles[index].title,
-                    playButtonOnPressed: () => print('play'),
+                    playButtonOnPressed: () => _playChart(index),
                     editButtonOnPressed: () => _editChartTitle(index),
                     deleteButtonOnPressed: () => _deleteChartTitle(index),
                     cardOnTap: () => _navChapterSummary(index, context),
@@ -133,7 +149,6 @@ class _ChartTitlesState extends State<ChartTitles> {
   }
 }
 
-// TODO: ここまできたら抽象化していい気もする
 /// チャートタイトルが書かれたカード
 class _ChartTitleCard extends StatelessWidget {
   final int index;

@@ -12,9 +12,14 @@ import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 class ChapterDetails extends StatefulWidget {
-  const ChapterDetails({super.key, required this.chapterSummary});
+  const ChapterDetails({
+    super.key,
+    required this.chapterSummary,
+    required this.isEditMode,
+  });
 
   final ChapterSummaryModel chapterSummary;
+  final bool isEditMode;
 
   // ステートを定義する
   @override
@@ -29,7 +34,6 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   late final String _chartId;
   late int currentPage;
   late String currentSummaryId;
-  Text currentPageTitle = Text('');
 
   @override
   void initState() {
@@ -94,6 +98,13 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: currentPage);
+    FloatingActionButton? addActionButton = widget.isEditMode
+        ? FloatingActionButton(
+            tooltip: 'アクション追加',
+            onPressed: _addActionItem,
+            child: const Icon(Icons.add),
+          )
+        : null;
 
     return Scaffold(
       appBar: AppBar(
@@ -101,28 +112,31 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         title: Text(_getCurrentPageTitle()),
       ),
       body: ValueListenableBuilder(
-          valueListenable: _chapterDetailBox.listenable(),
-          builder: (context, box, widget) => PageView.builder(
-                controller: pageController,
-                onPageChanged: (index) => _setCurrentPage(index),
-                itemCount: _detailMap.length,
-                itemBuilder: (context, index) {
-                  return _DetailPage(chapter: _detailMap[currentSummaryId]!);
-                },
-              )),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'アクション追加',
-        onPressed: _addActionItem,
-        child: const Icon(Icons.add),
+        valueListenable: _chapterDetailBox.listenable(),
+        builder: (context, box, _) => PageView.builder(
+          controller: pageController,
+          onPageChanged: (index) => _setCurrentPage(index),
+          itemCount: _detailMap.length,
+          itemBuilder: (context, index) {
+            return _DetailPage(
+              chapter: _detailMap[currentSummaryId]!,
+              isEditMode: widget.isEditMode,
+            );
+          },
+        ),
       ),
+      floatingActionButton: addActionButton,
     );
   }
 }
 
+/// アクションアイテムのリストを表示する画面構成
+/// PageViewでスクロールさせる構成単位
 class _DetailPage extends StatelessWidget {
   final ChapterDetailModel chapter;
+  final bool isEditMode;
 
-  const _DetailPage({required this.chapter});
+  const _DetailPage({required this.chapter, required this.isEditMode});
 
   void _editEstimateTime(BuildContext context) {
     DatePicker.showTimePicker(
@@ -172,56 +186,76 @@ class _DetailPage extends StatelessWidget {
     chapter.save();
   }
 
+  ListTile _actionItemListBuilder(BuildContext context, int index) {
+    ActionItemModel actionItem = chapter.actionItems[index];
+    bool isSection = actionItem.actionType == ActionType.section.id;
+    double fontSize = isSection ? 24.0 : 16.0;
+    double padding = isSection ? 8.0 : 4.0;
+    Color? titleColor =
+        isSection ? const Color.fromARGB(200, 255, 240, 200) : null;
+
+    return ListTile(
+      key: Key(actionItem.id),
+      leading: ActionType.getIconByInt(actionItem.actionType),
+      title: Text(actionItem.text),
+      titleTextStyle: TextStyle(fontSize: fontSize),
+      trailing: Wrap(children: [
+        if (isEditMode)
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () => _editActionItem(context, index),
+          ),
+        if (isEditMode)
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => _deleteActionItem(index),
+          ),
+        SizedBox(width: 10),
+      ]),
+      minVerticalPadding: padding,
+      tileColor: titleColor,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    IconButton? editEstimateTimeButton = isEditMode
+        ? IconButton(
+            onPressed: () => _editEstimateTime(context),
+            icon: Icon(Icons.edit_outlined),
+          )
+        : null;
+
     return Column(
       children: [
         // 区間予定タイム
-        ListTile(
-          leading: Icon(Icons.timer_outlined),
-          title: Text('区間予定タイム ${chapter.estimateTime}'),
-          trailing: IconButton(
-            onPressed: () => _editEstimateTime(context),
-            icon: Icon(Icons.edit_outlined),
-          ),
-        ),
+        Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: ListTile(
+              leading: Icon(Icons.timer_outlined),
+              title: Text('区間予定タイム ${chapter.estimateTime}'),
+              trailing: editEstimateTimeButton,
+            )),
         // TODO: 区間実績タイム
         // アクションアイテムリスト
-        Flexible(
-          child: ReorderableListView.builder(
-            itemCount: chapter.actionItems.length,
-            itemBuilder: (context, index) {
-              ActionItemModel actionItem = chapter.actionItems[index];
-              bool isSection = actionItem.actionType == ActionType.section.id;
-              double fontSize = isSection ? 24.0 : 16.0;
-              double padding = isSection ? 8.0 : 4.0;
-              Color? titleColor =
-                  isSection ? const Color.fromARGB(200, 255, 240, 200) : null;
-
-              return ListTile(
-                key: Key(actionItem.id),
-                leading: ActionType.getIconByInt(actionItem.actionType),
-                title: Text(actionItem.text),
-                titleTextStyle: TextStyle(fontSize: fontSize),
-                trailing: Wrap(children: [
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => _editActionItem(context, index),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _deleteActionItem(index),
-                  ),
-                  SizedBox(width: 10),
-                ]),
-                minVerticalPadding: padding,
-                tileColor: titleColor,
-              );
-            },
-            onReorder: (int oldIndex, int newIndex) =>
-                _reorderActionItem(oldIndex, newIndex),
-          ),
-        )
+        if (isEditMode)
+          Flexible(
+            child: ReorderableListView.builder(
+              itemCount: chapter.actionItems.length,
+              itemBuilder: (context, index) =>
+                  _actionItemListBuilder(context, index),
+              onReorder: (int oldIndex, int newIndex) =>
+                  _reorderActionItem(oldIndex, newIndex),
+            ),
+          )
+        else
+          Flexible(
+            child: ListView.builder(
+              itemCount: chapter.actionItems.length,
+              itemBuilder: (context, index) =>
+                  _actionItemListBuilder(context, index),
+            ),
+          )
       ],
     );
   }
