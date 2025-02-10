@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
+import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
@@ -101,6 +102,8 @@ class _ChartTitlesState extends State<ChartTitles> {
 
     if (firstChapter != null) {
       context.push('/chapter_detail', extra: (firstChapter, false));
+      ChartTimer.stopWatchTimer.onResetTimer();
+      ChartTimer.stopWatchTimer.onStartTimer();
     }
   }
 

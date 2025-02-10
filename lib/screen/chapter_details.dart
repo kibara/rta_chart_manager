@@ -4,6 +4,7 @@ import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/extension/datetime_extension.dart';
 import 'package:rta_chart_manager/component/extension/duration_extension.dart';
 import 'package:rta_chart_manager/component/icons/action_type.dart';
+import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
@@ -110,6 +111,14 @@ class _ChapterDetailsState extends State<ChapterDetails> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_getCurrentPageTitle()),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              ChartTimer.stopWatchTimer.onStopTimer();
+              ChartTimer.stopWatchTimer.onResetTimer();
+              Navigator.maybePop(context);
+            },
+            icon: BackButtonIcon()),
       ),
       body: ValueListenableBuilder(
         valueListenable: _chapterDetailBox.listenable(),
@@ -228,6 +237,12 @@ class _DetailPage extends StatelessWidget {
 
     return Column(
       children: [
+        // 現在の計測タイム
+        if (!isEditMode)
+          Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: ChartTimer(),
+          ),
         // 区間予定タイム
         Container(
             color: Theme.of(context).colorScheme.surface,
