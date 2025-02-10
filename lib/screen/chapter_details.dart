@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/extension/datetime_extension.dart';
@@ -35,15 +36,13 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   late final String _chartId;
   late int currentPage;
   late String currentSummaryId;
+  late String? beforeSummaryId;
+  late String? nextSummaryId;
 
   @override
   void initState() {
     // chartId
     _chartId = widget.chapterSummary.chartId;
-
-    // currentPage
-    currentPage = widget.chapterSummary.orderIndex;
-    currentSummaryId = widget.chapterSummary.id;
 
     // chapterSummary
     _chapterSummaryBox =
@@ -60,6 +59,14 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         element.summaryId: element
     };
 
+    // currentPage
+    currentPage = widget.chapterSummary.orderIndex;
+    currentSummaryId = widget.chapterSummary.id;
+
+    // NextPage
+    nextSummaryId = _getNextSummaryId();
+    beforeSummaryId = _getBeforeSummaryId();
+
     super.initState();
   }
 
@@ -70,11 +77,20 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         .title;
   }
 
-  void _setCurrentPage(int index) {
-    setState(() {
-      currentPage = index;
-      currentSummaryId = _chapterSummaryList[currentPage].id;
-    });
+  String? _getNextSummaryId() {
+    if (_chapterSummaryList.length == currentPage + 1) return null;
+    return _chapterSummaryList
+        .where((s) => s.orderIndex == currentPage + 1)
+        .firstOrNull
+        ?.id;
+  }
+
+  String? _getBeforeSummaryId() {
+    if (currentPage == 0) return null;
+    return _chapterSummaryList
+        .where((s) => s.orderIndex == currentPage - 1)
+        .firstOrNull
+        ?.id;
   }
 
   void _addActionItem() async {
@@ -98,7 +114,6 @@ class _ChapterDetailsState extends State<ChapterDetails> {
 
   @override
   Widget build(BuildContext context) {
-    PageController pageController = PageController(initialPage: currentPage);
     FloatingActionButton? addActionButton = widget.isEditMode
         ? FloatingActionButton(
             tooltip: 'アクション追加',
@@ -108,6 +123,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         : null;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_getCurrentPageTitle()),
@@ -121,17 +137,44 @@ class _ChapterDetailsState extends State<ChapterDetails> {
             icon: BackButtonIcon()),
       ),
       body: ValueListenableBuilder(
-        valueListenable: _chapterDetailBox.listenable(),
-        builder: (context, box, _) => PageView.builder(
-          controller: pageController,
-          onPageChanged: (index) => _setCurrentPage(index),
-          itemCount: _detailMap.length,
-          itemBuilder: (context, index) {
-            return _DetailPage(
-              chapter: _detailMap[currentSummaryId]!,
-              isEditMode: widget.isEditMode,
-            );
-          },
+          valueListenable: _chapterDetailBox.listenable(),
+          builder: (context, box, _) => _DetailPage(
+                chapter: _detailMap[currentSummaryId]!,
+                isEditMode: widget.isEditMode,
+              )),
+      bottomNavigationBar: Container(
+        color: Theme.of(context).colorScheme.surface,
+        child: Row(
+          children: [
+            if (beforeSummaryId != null)
+              Expanded(
+                  child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.inversePrimary),
+                onPressed: () => {
+                  context.go('/chapter_detail', extra: (
+                    _chapterSummaryBox.get(beforeSummaryId),
+                    widget.isEditMode
+                  ))
+                },
+                child: Text('< Before'),
+              )),
+            if (nextSummaryId != null)
+              Expanded(
+                  child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.inversePrimary),
+                onPressed: () => {
+                  context.go('/chapter_detail', extra: (
+                    _chapterSummaryBox.get(nextSummaryId),
+                    widget.isEditMode
+                  ))
+                },
+                child: Text('Next >'),
+              )),
+          ],
         ),
       ),
       floatingActionButton: addActionButton,
@@ -140,7 +183,6 @@ class _ChapterDetailsState extends State<ChapterDetails> {
 }
 
 /// アクションアイテムのリストを表示する画面構成
-/// PageViewでスクロールさせる構成単位
 class _DetailPage extends StatelessWidget {
   final ChapterDetailModel chapter;
   final bool isEditMode;
