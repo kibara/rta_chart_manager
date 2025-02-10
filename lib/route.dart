@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
-import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 import 'package:rta_chart_manager/screen/chapter_details.dart';
 import 'package:rta_chart_manager/screen/chapter_summary.dart';
 import 'package:rta_chart_manager/screen/chart_titles.dart';
@@ -14,9 +13,9 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/chapter_summary',
+      path: '/chapter_summary/:chartId',
       builder: (context, state) => ChapterSummary(
-        chartTitle: state.extra as ChartTitleModel,
+        chartTitleId: state.pathParameters['chartId'] as String,
       ),
     ),
     GoRoute(

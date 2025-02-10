@@ -9,9 +9,9 @@ import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 
 class ChapterSummary extends StatefulWidget {
-  const ChapterSummary({super.key, required this.chartTitle});
+  const ChapterSummary({super.key, required this.chartTitleId});
 
-  final ChartTitleModel chartTitle;
+  final String chartTitleId;
 
   // ステートを定義する
   @override
@@ -19,6 +19,7 @@ class ChapterSummary extends StatefulWidget {
 }
 
 class _ChapterDetailsState extends State<ChapterSummary> {
+  late final Box<ChartTitleModel> _chartTitleBox;
   late final Box<ChapterDetailModel> _chapterDetailBox;
 
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
@@ -27,13 +28,14 @@ class _ChapterDetailsState extends State<ChapterSummary> {
 
   @override
   void initState() {
+    _chartTitleBox = KvsUtils.getBox<ChartTitleModel>(Collections.chartTitles);
     _chapterDetailBox =
         KvsUtils.getBox<ChapterDetailModel>(Collections.chapterDetails);
     _chapterSummaryBox =
         KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
-    _chartTitle = widget.chartTitle.title;
+    _chartTitle = _chartTitleBox.get(widget.chartTitleId)!.title;
     _chapterSummary = List.from(_chapterSummaryBox.values.where(
-        (ChapterSummaryModel model) => model.chartId == widget.chartTitle.id));
+        (ChapterSummaryModel model) => model.chartId == widget.chartTitleId));
     _chapterSummary.sort((a, b) => a.orderIndex > b.orderIndex ? 1 : -1);
 
     super.initState();
@@ -45,7 +47,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
         context, 'chapter ${_chapterSummary.length + 1}');
     if (summaryTitle != null) {
       ChapterSummaryModel newChapterSummaryModel = ChapterSummaryModel(
-        widget.chartTitle.id,
+        widget.chartTitleId,
         summaryTitle,
         _chapterSummary.length,
       );
@@ -54,7 +56,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
       _chapterSummaryBox.put(newChapterSummaryModel.id, newChapterSummaryModel);
 
       ChapterDetailModel newChapterDetailModel = ChapterDetailModel(
-        widget.chartTitle.id,
+        widget.chartTitleId,
         newChapterSummaryModel.id,
       );
       _chapterDetailBox.put(newChapterDetailModel.id, newChapterDetailModel);
@@ -108,6 +110,12 @@ class _ChapterDetailsState extends State<ChapterSummary> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_chartTitle),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              context.go('/');
+            },
+            icon: BackButtonIcon()),
       ),
       body: ValueListenableBuilder(
         valueListenable: _chapterSummaryBox.listenable(),

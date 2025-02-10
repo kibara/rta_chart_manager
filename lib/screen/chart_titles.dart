@@ -90,7 +90,7 @@ class _ChartTitlesState extends State<ChartTitles> {
 
   /// チャート詳細に遷移
   void _navChapterSummary(int index, BuildContext context) {
-    context.push('/chapter_summary', extra: _sortedChartTitles[index]);
+    context.go("/chapter_summary/${_sortedChartTitles[index].id}");
   }
 
   /// チャートをプレイする
