@@ -101,8 +101,14 @@ class _ChapterDetailsState extends State<ChapterSummary> {
 
   /// チャート詳細に遷移
   void _navChapterDetail(int index, BuildContext context) {
-    context.go(
-        "/chapter_detail/${widget.chartTitleId}/${_chapterSummary[index].id}?editMode=true");
+    context.goNamed(
+      'chapter_detail',
+      pathParameters: {
+        'chartId': widget.chartTitleId,
+        'summaryId': _chapterSummary[index].id,
+      },
+      queryParameters: {'editMode': 'true'},
+    );
   }
 
   @override
@@ -114,7 +120,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
-              context.go('/');
+              context.goNamed('chart_title');
             },
             icon: BackButtonIcon()),
       ),

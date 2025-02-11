@@ -90,7 +90,12 @@ class _ChartTitlesState extends State<ChartTitles> {
 
   /// チャート詳細に遷移
   void _navChapterSummary(int index, BuildContext context) {
-    context.go("/chapter_summary/${_sortedChartTitles[index].id}");
+    context.goNamed(
+      'chapter_summary',
+      pathParameters: {
+        'chartId': _sortedChartTitles[index].id,
+      },
+    );
   }
 
   /// チャートをプレイする
@@ -101,8 +106,14 @@ class _ChartTitlesState extends State<ChartTitles> {
         .firstOrNull;
 
     if (firstChapter != null) {
-      context.go(
-          "/chapter_detail/${chartTitleModel.id}/${firstChapter.id}?editMode=false");
+      context.goNamed(
+        'chapter_detail',
+        pathParameters: {
+          'chartId': chartTitleModel.id,
+          'summaryId': firstChapter.id,
+        },
+        queryParameters: {'editMode': 'false'},
+      );
       ChartTimer.stopWatchTimer.onResetTimer();
       ChartTimer.stopWatchTimer.onStartTimer();
     }

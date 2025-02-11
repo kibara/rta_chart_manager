@@ -131,7 +131,12 @@ class _ChapterDetailsState extends State<ChapterDetails> {
               // FIXME: プレイモードのときはチャートトップに行くべきだと思う
               ChartTimer.stopWatchTimer.onStopTimer();
               ChartTimer.stopWatchTimer.onResetTimer();
-              context.go("/chapter_summary/${widget.chartTitleId}");
+              context.goNamed(
+                'chapter_summary',
+                pathParameters: {
+                  'chartId': widget.chartTitleId,
+                },
+              );
             },
             icon: BackButtonIcon()),
       ),
@@ -152,8 +157,14 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary),
                 onPressed: () => {
-                  context.go(
-                      "/chapter_detail/${widget.chartTitleId}/$beforeSummaryId?editMode=${widget.isEditMode}")
+                  context.goNamed(
+                    'chapter_detail',
+                    pathParameters: {
+                      'chartId': widget.chartTitleId,
+                      'summaryId': beforeSummaryId!,
+                    },
+                    queryParameters: {'editMode': "${widget.isEditMode}"},
+                  )
                 },
                 child: Text('< Before'),
               )),
@@ -164,8 +175,14 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary),
                 onPressed: () => {
-                  context.go(
-                      "/chapter_detail/${widget.chartTitleId}/$nextSummaryId?editMode=${widget.isEditMode}")
+                  context.goNamed(
+                    'chapter_detail',
+                    pathParameters: {
+                      'chartId': widget.chartTitleId,
+                      'summaryId': nextSummaryId!,
+                    },
+                    queryParameters: {'editMode': "${widget.isEditMode}"},
+                  )
                 },
                 child: Text('Next >'),
               )),

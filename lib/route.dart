@@ -8,12 +8,14 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
+      name: 'chart_title',
       builder: (context, state) => const ChartTitles(
         title: 'RTA Chart List',
       ),
     ),
     GoRoute(
       path: '/chapter_summary/:chartId',
+      name: 'chapter_summary',
       builder: (context, state) => ChapterSummary(
         key: Key(state.pathParameters['chartId'] as String),
         chartTitleId: state.pathParameters['chartId'] as String,
@@ -21,6 +23,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/chapter_detail/:chartId/:summaryId',
+      name: 'chapter_detail',
       builder: (context, state) => ChapterDetails(
         key: Key(state.pathParameters['summaryId'] as String),
         chartTitleId: state.pathParameters['chartId'] as String,
