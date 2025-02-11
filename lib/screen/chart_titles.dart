@@ -101,7 +101,8 @@ class _ChartTitlesState extends State<ChartTitles> {
         .firstOrNull;
 
     if (firstChapter != null) {
-      context.push('/chapter_detail', extra: (firstChapter, false));
+      context.go(
+          "/chapter_detail/${chartTitleModel.id}/${firstChapter.id}?editMode=false");
       ChartTimer.stopWatchTimer.onResetTimer();
       ChartTimer.stopWatchTimer.onStartTimer();
     }

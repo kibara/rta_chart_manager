@@ -101,7 +101,8 @@ class _ChapterDetailsState extends State<ChapterSummary> {
 
   /// チャート詳細に遷移
   void _navChapterDetail(int index, BuildContext context) {
-    context.push('/chapter_detail', extra: (_chapterSummary[index], true));
+    context.go(
+        "/chapter_detail/${widget.chartTitleId}/${_chapterSummary[index].id}?editMode=true");
   }
 
   @override

@@ -16,11 +16,13 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 class ChapterDetails extends StatefulWidget {
   const ChapterDetails({
     super.key,
-    required this.chapterSummary,
+    required this.chartTitleId,
+    required this.chapterSummaryId,
     required this.isEditMode,
   });
 
-  final ChapterSummaryModel chapterSummary;
+  final String chartTitleId;
+  final String chapterSummaryId;
   final bool isEditMode;
 
   // ステートを定義する
@@ -33,7 +35,6 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   late final Box<ChapterDetailModel> _chapterDetailBox;
   late final List<ChapterSummaryModel> _chapterSummaryList;
   late final Map<String, ChapterDetailModel> _detailMap;
-  late final String _chartId;
   late int currentPage;
   late String currentSummaryId;
   late String? beforeSummaryId;
@@ -41,27 +42,24 @@ class _ChapterDetailsState extends State<ChapterDetails> {
 
   @override
   void initState() {
-    // chartId
-    _chartId = widget.chapterSummary.chartId;
-
     // chapterSummary
     _chapterSummaryBox =
         KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
-    _chapterSummaryList = List.from(
-        _chapterSummaryBox.values.where((s) => s.chartId == _chartId));
+    _chapterSummaryList = List.from(_chapterSummaryBox.values
+        .where((s) => s.chartId == widget.chartTitleId));
 
     // chapterDetail
     _chapterDetailBox =
         KvsUtils.getBox<ChapterDetailModel>(Collections.chapterDetails);
     _detailMap = {
-      for (var element
-          in _chapterDetailBox.values.where((d) => d.chartId == _chartId))
+      for (var element in _chapterDetailBox.values
+          .where((d) => d.chartId == widget.chartTitleId))
         element.summaryId: element
     };
 
     // currentPage
-    currentPage = widget.chapterSummary.orderIndex;
-    currentSummaryId = widget.chapterSummary.id;
+    currentPage = _chapterSummaryBox.get(widget.chapterSummaryId)!.orderIndex;
+    currentSummaryId = widget.chapterSummaryId;
 
     // NextPage
     nextSummaryId = _getNextSummaryId();
@@ -130,9 +128,10 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
+              // FIXME: プレイモードのときはチャートトップに行くべきだと思う
               ChartTimer.stopWatchTimer.onStopTimer();
               ChartTimer.stopWatchTimer.onResetTimer();
-              Navigator.maybePop(context);
+              context.go("/chapter_summary/${widget.chartTitleId}");
             },
             icon: BackButtonIcon()),
       ),
@@ -153,10 +152,8 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary),
                 onPressed: () => {
-                  context.go('/chapter_detail', extra: (
-                    _chapterSummaryBox.get(beforeSummaryId),
-                    widget.isEditMode
-                  ))
+                  context.go(
+                      "/chapter_detail/${widget.chartTitleId}/$beforeSummaryId?editMode=${widget.isEditMode}")
                 },
                 child: Text('< Before'),
               )),
@@ -167,10 +164,8 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary),
                 onPressed: () => {
-                  context.go('/chapter_detail', extra: (
-                    _chapterSummaryBox.get(nextSummaryId),
-                    widget.isEditMode
-                  ))
+                  context.go(
+                      "/chapter_detail/${widget.chartTitleId}/$nextSummaryId?editMode=${widget.isEditMode}")
                 },
                 child: Text('Next >'),
               )),
