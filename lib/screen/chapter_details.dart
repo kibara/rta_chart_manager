@@ -129,8 +129,8 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         leading: IconButton(
             onPressed: () {
               // FIXME: プレイモードのときはチャートトップに行くべきだと思う
-              ChartTimer.stopWatchTimer.onStopTimer();
-              ChartTimer.stopWatchTimer.onResetTimer();
+              ChartTimer.stop();
+              ChartTimer.reset();
               context.goNamed(
                 'chapter_summary',
                 pathParameters: {
@@ -174,7 +174,13 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary),
-                onPressed: () => {
+                onPressed: () {
+                  if (!widget.isEditMode) {
+                    // プレイモードならば、次のチャプターへ遷移する際にラップタイムを記録する
+                    // そのラップタイムを、そのチャプターの実績時間とする
+                    ChartTimer.addLap();
+                  }
+
                   context.goNamed(
                     'chapter_detail',
                     pathParameters: {
@@ -182,7 +188,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                       'summaryId': nextSummaryId!,
                     },
                     queryParameters: {'editMode': "${widget.isEditMode}"},
-                  )
+                  );
                 },
                 child: Text('Next >'),
               )),

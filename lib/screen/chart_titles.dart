@@ -114,8 +114,8 @@ class _ChartTitlesState extends State<ChartTitles> {
         },
         queryParameters: {'editMode': 'false'},
       );
-      ChartTimer.stopWatchTimer.onResetTimer();
-      ChartTimer.stopWatchTimer.onStartTimer();
+      ChartTimer.reset();
+      ChartTimer.start();
     }
   }
 
