@@ -5,7 +5,7 @@ class ChartTimer extends StatefulWidget {
   const ChartTimer({super.key});
 
   static final _stopWatchTimer = StopWatchTimer();
-  static final records = [];
+  static final _records = [];
 
   /// タイマースタート
   static void start() {
@@ -19,13 +19,19 @@ class ChartTimer extends StatefulWidget {
 
   /// タイマーのリセット
   static void reset() {
-    records.clear();
+    _records.clear();
     _stopWatchTimer.onResetTimer();
   }
 
   /// ラップタイムの追加
-  static void addLap() {
+  static String addLap() {
     _stopWatchTimer.onAddLap();
+    return getLastLapTime();
+  }
+
+  /// 最終ラップタイムを取得
+  static String getLastLapTime() {
+    return _records.last ?? '00:00:00.00';
   }
 
   @override
@@ -41,7 +47,7 @@ class _ChartTimerState extends State<ChartTimer> {
       initialized = true;
       ChartTimer._stopWatchTimer.records.listen((records) async {
         if (records.isNotEmpty) {
-          ChartTimer.records.add(records.last.displayTime!);
+          ChartTimer._records.add(records.last.displayTime!);
         }
       });
     }

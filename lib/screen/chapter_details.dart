@@ -178,7 +178,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                   if (!widget.isEditMode) {
                     // プレイモードならば、次のチャプターへ遷移する際にラップタイムを記録する
                     // そのラップタイムを、そのチャプターの実績時間とする
-                    ChartTimer.addLap();
+                    String lapTime = ChartTimer.addLap();
                   }
 
                   context.goNamed(
