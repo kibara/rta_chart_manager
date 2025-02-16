@@ -4,6 +4,7 @@ import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
+import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 import 'package:rta_chart_manager/database/models/duration_adapter.dart';
 import 'package:rta_chart_manager/route.dart';
@@ -32,6 +33,10 @@ Future<void> prepareKvs() async {
   KvsUtils.registerAdapter<ActionItemModel>(ActionItemModelAdapter());
   KvsUtils.registerAdapter<Duration>(DurationAdapter());
   await KvsUtils.openBox<ChapterDetailModel>(Collections.chapterDetails);
+
+  // チャートプレイ時間
+  KvsUtils.registerAdapter<ChartPlayTimeModel>(ChartPlayTimeModelAdapter());
+  await KvsUtils.openBox<ChartPlayTimeModel>(Collections.chartPlayTimes);
 }
 
 class RTAChartManager extends StatelessWidget {
