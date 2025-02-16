@@ -18,9 +18,9 @@ class ChartPlayTimeModelAdapter extends TypeAdapter<ChartPlayTimeModel> {
     };
     return ChartPlayTimeModel(
       fields[1] as String,
-      fields[2] as String,
     )
       ..id = fields[0] as String
+      ..playTitle = fields[2] as String
       ..playTime = fields[3] as Duration
       ..lapTimes = (fields[4] as Map).cast<String, Duration>()
       ..startDateTime = fields[5] as DateTime;

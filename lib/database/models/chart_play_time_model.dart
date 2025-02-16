@@ -12,7 +12,7 @@ class ChartPlayTimeModel extends HiveObject {
   String chartId;
 
   @HiveField(2)
-  String playTitle;
+  String playTitle = '';
 
   @HiveField(3)
   Duration playTime = Duration(seconds: 0);
@@ -24,5 +24,5 @@ class ChartPlayTimeModel extends HiveObject {
   @HiveField(5)
   DateTime startDateTime = DateTime.now();
 
-  ChartPlayTimeModel(this.chartId, this.playTitle);
+  ChartPlayTimeModel(this.chartId);
 }
