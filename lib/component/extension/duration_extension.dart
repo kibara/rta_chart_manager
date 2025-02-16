@@ -24,6 +24,25 @@ extension DurationExtension on Duration {
     return "$negativeSign$strHour:$strMin:$strSec.$strMills";
   }
 
+  /// 文字列からDurationへ
+  /// HH:mm:ss.SS 形式であることが前提
+  static Duration fromString(String s) {
+    List<String> HHmm = s.split(':');
+    List<String> ssSS = HHmm[2].split('.');
+
+    int hours = int.parse(HHmm[0]);
+    int minutes = int.parse(HHmm[1]);
+    int seconds = int.parse(ssSS[0]);
+    int milliseconds = int.parse(ssSS[1]);
+
+    return Duration(
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds,
+      milliseconds: milliseconds,
+    );
+  }
+
   /// ここでは符号は考えず、絶対値で時刻形式にする
   DateTime conv2Datetime() {
     return DateTime.utc(
