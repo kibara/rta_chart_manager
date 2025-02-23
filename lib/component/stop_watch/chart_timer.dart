@@ -31,7 +31,11 @@ class ChartTimer extends StatefulWidget {
 
   /// 最終ラップタイムを取得
   static String getLastLapTime() {
-    return _records.last ?? '00:00:00.00';
+    if (_records.isEmpty) {
+      return '00:00:00.00';
+    }
+
+    return _records.last;
   }
 
   @override

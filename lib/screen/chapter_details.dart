@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/extension/datetime_extension.dart';
 import 'package:rta_chart_manager/component/extension/duration_extension.dart';
+import 'package:rta_chart_manager/component/extension/string_extension.dart';
 import 'package:rta_chart_manager/component/icons/action_type.dart';
 import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
 import 'package:rta_chart_manager/database/collections.dart';
@@ -12,6 +13,7 @@ import 'package:rta_chart_manager/database/models/action_item_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
 
 class ChapterDetails extends StatefulWidget {
   const ChapterDetails({
@@ -33,12 +35,15 @@ class ChapterDetails extends StatefulWidget {
 class _ChapterDetailsState extends State<ChapterDetails> {
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
   late final Box<ChapterDetailModel> _chapterDetailBox;
+  late final Box<ChartPlayTimeModel> _chartPlayTimeBox;
   late final List<ChapterSummaryModel> _chapterSummaryList;
   late final Map<String, ChapterDetailModel> _detailMap;
   late int currentPage;
   late String currentSummaryId;
   late String? beforeSummaryId;
   late String? nextSummaryId;
+  late final List<ChartPlayTimeModel> _playHistories;
+  late final ChartPlayTimeModel currentChartPlayTime;
 
   @override
   void initState() {
@@ -56,6 +61,20 @@ class _ChapterDetailsState extends State<ChapterDetails> {
           .where((d) => d.chartId == widget.chartTitleId))
         element.summaryId: element
     };
+
+    // chartPlayTime
+    _chartPlayTimeBox =
+        KvsUtils.getBox<ChartPlayTimeModel>(Collections.chartPlayTimes);
+    _playHistories = _chartPlayTimeBox.values
+        .where((p) => p.chartId == widget.chartTitleId)
+        .toList();
+
+    // プレイモードなら記録をつくる
+    if (!widget.isEditMode) {
+      currentChartPlayTime = ChartPlayTimeModel(widget.chartTitleId);
+      _playHistories.add(currentChartPlayTime);
+      _chartPlayTimeBox.put(currentChartPlayTime.id, currentChartPlayTime);
+    }
 
     // currentPage
     currentPage = _chapterSummaryBox.get(widget.chapterSummaryId)!.orderIndex;
@@ -179,6 +198,10 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     // プレイモードならば、次のチャプターへ遷移する際にラップタイムを記録する
                     // そのラップタイムを、そのチャプターの実績時間とする
                     String lapTime = ChartTimer.addLap();
+                    currentChartPlayTime.lapTimes.addEntries({
+                      currentSummaryId: lapTime.conv2Duration(),
+                    }.entries);
+                    currentChartPlayTime.save();
                   }
 
                   context.goNamed(
