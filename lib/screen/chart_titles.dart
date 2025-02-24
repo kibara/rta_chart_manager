@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rta_chart_manager/component/cards/chart_title_card.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
 import 'package:rta_chart_manager/database/collections.dart';
@@ -138,7 +139,7 @@ class _ChartTitlesState extends State<ChartTitles> {
               child: ReorderableListView.builder(
                 itemCount: _sortedChartTitles.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return _ChartTitleCard(
+                  return ChartTitleCard(
                     key: Key(_sortedChartTitles[index].id),
                     index: index,
                     title: _sortedChartTitles[index].title,
@@ -159,57 +160,6 @@ class _ChartTitlesState extends State<ChartTitles> {
         onPressed: _addNewChartTitle,
         tooltip: 'チャート作成',
         child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-/// チャートタイトルが書かれたカード
-class _ChartTitleCard extends StatelessWidget {
-  final int index;
-  final String title;
-  final VoidCallback? playButtonOnPressed;
-  final VoidCallback? editButtonOnPressed;
-  final VoidCallback? deleteButtonOnPressed;
-  final VoidCallback? cardOnTap;
-
-  const _ChartTitleCard({
-    super.key,
-    required this.index,
-    required this.title,
-    required this.playButtonOnPressed,
-    this.editButtonOnPressed,
-    this.deleteButtonOnPressed,
-    this.cardOnTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      key: key,
-      child: ListTile(
-        title: Text(title),
-        trailing: Wrap(
-          children: [
-            if (playButtonOnPressed != null)
-              IconButton(
-                icon: const Icon(Icons.play_circle),
-                onPressed: playButtonOnPressed,
-              ),
-            if (editButtonOnPressed != null)
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: editButtonOnPressed,
-              ),
-            if (deleteButtonOnPressed != null)
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: deleteButtonOnPressed,
-              ),
-            SizedBox(width: 10),
-          ],
-        ),
-        onTap: cardOnTap,
       ),
     );
   }
