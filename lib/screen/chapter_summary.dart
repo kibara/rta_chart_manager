@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/database/collections.dart';
@@ -7,6 +6,7 @@ import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
+import 'package:rta_chart_manager/route.dart';
 
 class ChapterSummary extends StatefulWidget {
   const ChapterSummary({super.key, required this.chartTitleId});
@@ -101,7 +101,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
 
   /// チャート詳細に遷移
   void _navChapterDetail(int index, BuildContext context) {
-    context.goNamed(
+    router.goNamed(
       'chapter_detail',
       pathParameters: {
         'chartId': widget.chartTitleId,
@@ -120,7 +120,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
-              context.goNamed('chart_title');
+              router.goNamed('chart_title');
             },
             icon: BackButtonIcon()),
       ),

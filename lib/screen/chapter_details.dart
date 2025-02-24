@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/extension/datetime_extension.dart';
@@ -14,17 +13,21 @@ import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
+import 'package:rta_chart_manager/route.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChapterDetails extends StatefulWidget {
   const ChapterDetails({
     super.key,
     required this.chartTitleId,
     required this.chapterSummaryId,
+    required this.chartPlayId,
     required this.isEditMode,
   });
 
   final String chartTitleId;
   final String chapterSummaryId;
+  final String? chartPlayId;
   final bool isEditMode;
 
   // ステートを定義する
@@ -42,7 +45,6 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   late String currentSummaryId;
   late String? beforeSummaryId;
   late String? nextSummaryId;
-  late final List<ChartPlayTimeModel> _playHistories;
   late final ChartPlayTimeModel currentChartPlayTime;
 
   @override
@@ -65,16 +67,6 @@ class _ChapterDetailsState extends State<ChapterDetails> {
     // chartPlayTime
     _chartPlayTimeBox =
         KvsUtils.getBox<ChartPlayTimeModel>(Collections.chartPlayTimes);
-    _playHistories = _chartPlayTimeBox.values
-        .where((p) => p.chartId == widget.chartTitleId)
-        .toList();
-
-    // プレイモードなら記録をつくる
-    if (!widget.isEditMode) {
-      currentChartPlayTime = ChartPlayTimeModel(widget.chartTitleId);
-      _playHistories.add(currentChartPlayTime);
-      _chartPlayTimeBox.put(currentChartPlayTime.id, currentChartPlayTime);
-    }
 
     // currentPage
     currentPage = _chapterSummaryBox.get(widget.chapterSummaryId)!.orderIndex;
@@ -83,6 +75,16 @@ class _ChapterDetailsState extends State<ChapterDetails> {
     // NextPage
     nextSummaryId = _getNextSummaryId();
     beforeSummaryId = _getBeforeSummaryId();
+
+    // プレイモードで最初の画面に遷移したときだけ、記録をつくる
+    if (!widget.isEditMode) {
+      if (widget.chartPlayId == null) {
+        currentChartPlayTime = ChartPlayTimeModel(widget.chartTitleId);
+        _chartPlayTimeBox.put(currentChartPlayTime.id, currentChartPlayTime);
+      } else {
+        currentChartPlayTime = _chartPlayTimeBox.get(widget.chartPlayId)!;
+      }
+    }
 
     super.initState();
   }
@@ -150,7 +152,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
               // FIXME: プレイモードのときはチャートトップに行くべきだと思う
               ChartTimer.stop();
               ChartTimer.reset();
-              context.goNamed(
+              router.goNamed(
                 'chapter_summary',
                 pathParameters: {
                   'chartId': widget.chartTitleId,
@@ -176,13 +178,17 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary),
                 onPressed: () => {
-                  context.goNamed(
+                  router.goNamed(
                     'chapter_detail',
                     pathParameters: {
                       'chartId': widget.chartTitleId,
                       'summaryId': beforeSummaryId!,
                     },
-                    queryParameters: {'editMode': "${widget.isEditMode}"},
+                    queryParameters: {
+                      'editMode': "${widget.isEditMode}",
+                      'playId':
+                          widget.isEditMode ? null : currentChartPlayTime.id,
+                    },
                   )
                 },
                 child: Text('< Before'),
@@ -193,24 +199,29 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary),
-                onPressed: () {
+                onPressed: () async {
                   if (!widget.isEditMode) {
                     // プレイモードならば、次のチャプターへ遷移する際にラップタイムを記録する
                     // そのラップタイムを、そのチャプターの実績時間とする
-                    String lapTime = ChartTimer.addLap();
+                    List<StopWatchRecord> lapTimes = await ChartTimer.addLap();
                     currentChartPlayTime.lapTimes.addEntries({
-                      currentSummaryId: lapTime.conv2Duration(),
+                      currentSummaryId:
+                          lapTimes.last.displayTime!.conv2Duration(),
                     }.entries);
                     currentChartPlayTime.save();
                   }
 
-                  context.goNamed(
+                  router.goNamed(
                     'chapter_detail',
                     pathParameters: {
                       'chartId': widget.chartTitleId,
                       'summaryId': nextSummaryId!,
                     },
-                    queryParameters: {'editMode': "${widget.isEditMode}"},
+                    queryParameters: {
+                      'editMode': "${widget.isEditMode}",
+                      'playId':
+                          widget.isEditMode ? null : currentChartPlayTime.id,
+                    },
                   );
                 },
                 child: Text('Next >'),
@@ -221,18 +232,20 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor:
                             Theme.of(context).colorScheme.inversePrimary),
-                    onPressed: () {
+                    onPressed: () async {
                       // チャート完了までいったら、タイマーを止め履歴画面に遷移する
-                      String lapTime = ChartTimer.addLap();
+                      List<StopWatchRecord> lapTimes =
+                          await ChartTimer.addLap();
                       currentChartPlayTime.lapTimes.addEntries({
-                        currentSummaryId: lapTime.conv2Duration(),
+                        currentSummaryId:
+                            lapTimes.last.displayTime!.conv2Duration(),
                       }.entries);
                       currentChartPlayTime.save();
 
                       ChartTimer.stop();
 
                       // FIXME: 遷移先、パラメタ
-                      context.goNamed(
+                      router.goNamed(
                         'chart_result',
                         pathParameters: {
                           'chartId': widget.chartTitleId,

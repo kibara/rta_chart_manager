@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
@@ -7,6 +6,7 @@ import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
+import 'package:rta_chart_manager/route.dart';
 
 class ChartTitles extends StatefulWidget {
   const ChartTitles({super.key, required this.title});
@@ -58,7 +58,7 @@ class _ChartTitlesState extends State<ChartTitles> {
   /// チャート新規作成
   void _addNewChartTitle() async {
     final String? newChartTitle =
-        await DialogUtils.showEditingDialog(context, '無題のチャート');
+        await DialogUtils.showEditingDialog(context, 'no title chart');
 
     if (newChartTitle != null) {
       ChartTitleModel newChart = ChartTitleModel(
@@ -90,7 +90,7 @@ class _ChartTitlesState extends State<ChartTitles> {
 
   /// チャート詳細に遷移
   void _navChapterSummary(int index, BuildContext context) {
-    context.goNamed(
+    router.goNamed(
       'chapter_summary',
       pathParameters: {
         'chartId': _sortedChartTitles[index].id,
@@ -106,7 +106,7 @@ class _ChartTitlesState extends State<ChartTitles> {
         .firstOrNull;
 
     if (firstChapter != null) {
-      context.goNamed(
+      router.goNamed(
         'chapter_detail',
         pathParameters: {
           'chartId': chartTitleModel.id,

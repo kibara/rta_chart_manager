@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:async/async.dart';
 
 class ChartTimer extends StatefulWidget {
   const ChartTimer({super.key});
 
   static final _stopWatchTimer = StopWatchTimer();
-  static final _records = [];
+  static final StreamQueue<List<StopWatchRecord>> _records =
+      StreamQueue(ChartTimer._stopWatchTimer.records);
 
   /// タイマースタート
   static void start() {
@@ -19,23 +21,13 @@ class ChartTimer extends StatefulWidget {
 
   /// タイマーのリセット
   static void reset() {
-    _records.clear();
     _stopWatchTimer.onResetTimer();
   }
 
-  /// ラップタイムの追加
-  static String addLap() {
+  /// ラップタイムを追加し、最終ラップタイムを返す
+  static Future<List<StopWatchRecord>> addLap() async {
     _stopWatchTimer.onAddLap();
-    return getLastLapTime();
-  }
-
-  /// 最終ラップタイムを取得
-  static String getLastLapTime() {
-    if (_records.isEmpty) {
-      return '00:00:00.00';
-    }
-
-    return _records.last;
+    return _records.next;
   }
 
   @override
@@ -43,18 +35,8 @@ class ChartTimer extends StatefulWidget {
 }
 
 class _ChartTimerState extends State<ChartTimer> {
-  static bool initialized = false;
-
   @override
   void initState() {
-    if (!initialized) {
-      initialized = true;
-      ChartTimer._stopWatchTimer.records.listen((records) async {
-        if (records.isNotEmpty) {
-          ChartTimer._records.add(records.last.displayTime!);
-        }
-      });
-    }
     super.initState();
   }
 

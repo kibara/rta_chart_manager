@@ -29,6 +29,7 @@ final router = GoRouter(
         key: Key(state.pathParameters['summaryId'] as String),
         chartTitleId: state.pathParameters['chartId'] as String,
         chapterSummaryId: state.pathParameters['summaryId'] as String,
+        chartPlayId: state.uri.queryParameters['playId'],
         isEditMode: bool.parse(state.uri.queryParameters['editMode']!),
       ),
     ),
