@@ -61,7 +61,6 @@ class _ChartTitlesState extends State<ChartPlayResult> {
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
-              // FIXME: プレイモードのときはチャートトップに行くべきだと思う
               router.goNamed('chart_title');
             },
             icon: BackButtonIcon()),
