@@ -7,6 +7,7 @@ import 'package:rta_chart_manager/screen/chart_titles.dart';
 
 final router = GoRouter(
   routes: [
+    // チャート一覧
     GoRoute(
       path: '/',
       name: 'chart_title',
@@ -14,6 +15,7 @@ final router = GoRouter(
         title: 'RTA Chart List',
       ),
     ),
+    // チャプター一覧
     GoRoute(
       path: '/chapter_summary/:chartId',
       name: 'chapter_summary',
@@ -22,6 +24,7 @@ final router = GoRouter(
         chartTitleId: state.pathParameters['chartId'] as String,
       ),
     ),
+    // チャプター詳細
     GoRoute(
       path: '/chapter_detail/:chartId/:summaryId',
       name: 'chapter_detail',
@@ -33,6 +36,7 @@ final router = GoRouter(
         isEditMode: bool.parse(state.uri.queryParameters['editMode']!),
       ),
     ),
+    // チャートリザルト
     GoRoute(
       path: '/chart_result/:chartId/:playId',
       name: 'chart_result',
