@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rta_chart_manager/screen/chapter_details.dart';
 import 'package:rta_chart_manager/screen/chapter_summary.dart';
+import 'package:rta_chart_manager/screen/chart_play_history.dart';
 import 'package:rta_chart_manager/screen/chart_titles.dart';
 
 final router = GoRouter(
@@ -29,6 +30,15 @@ final router = GoRouter(
         chartTitleId: state.pathParameters['chartId'] as String,
         chapterSummaryId: state.pathParameters['summaryId'] as String,
         isEditMode: bool.parse(state.uri.queryParameters['editMode']!),
+      ),
+    ),
+    GoRoute(
+      path: '/chart_result/:chartId/:playId',
+      name: 'chart_result',
+      builder: (context, state) => ChartPlayResult(
+        key: Key(state.pathParameters['playId'] as String),
+        chartTitleId: state.pathParameters['chartId'] as String,
+        chartPlayId: state.pathParameters['playId'] as String,
       ),
     ),
   ],

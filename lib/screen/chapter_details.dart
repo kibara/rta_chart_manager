@@ -215,6 +215,33 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                 },
                 child: Text('Next >'),
               )),
+            if (nextSummaryId == null && !widget.isEditMode)
+              Expanded(
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.inversePrimary),
+                    onPressed: () {
+                      // チャート完了までいったら、タイマーを止め履歴画面に遷移する
+                      String lapTime = ChartTimer.addLap();
+                      currentChartPlayTime.lapTimes.addEntries({
+                        currentSummaryId: lapTime.conv2Duration(),
+                      }.entries);
+                      currentChartPlayTime.save();
+
+                      ChartTimer.stop();
+
+                      // FIXME: 遷移先、パラメタ
+                      context.goNamed(
+                        'chart_result',
+                        pathParameters: {
+                          'chartId': widget.chartTitleId,
+                          'playId': currentChartPlayTime.id,
+                        },
+                      );
+                    },
+                    child: Text('Game Clear!')),
+              ),
           ],
         ),
       ),
