@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
-import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
+import 'package:rta_chart_manager/route.dart';
 
 class ChartPlayResult extends StatefulWidget {
   const ChartPlayResult({
@@ -29,6 +27,7 @@ class _ChartTitlesState extends State<ChartPlayResult> {
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
   late final Box<ChartPlayTimeModel> _chartPlayResultBox;
 
+  late final List<ChapterSummaryModel> _chapterSummaryList;
   late final ChartPlayTimeModel _currentPlayHistory;
 
   @override
@@ -38,6 +37,12 @@ class _ChartTitlesState extends State<ChartPlayResult> {
         KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
     _chartPlayResultBox =
         KvsUtils.getBox<ChartPlayTimeModel>(Collections.chartPlayTimes);
+
+    // FIXME: 共通化したい
+    _chapterSummaryList = _chapterSummaryBox.values
+        .where((s) => s.chartId == widget.chartTitleId)
+        .toList();
+    _chapterSummaryList.sort((a, b) => a.orderIndex > b.orderIndex ? 1 : -1);
 
     _currentPlayHistory = _chartPlayResultBox.get(widget.chartPlayId)!;
 
@@ -53,17 +58,25 @@ class _ChartTitlesState extends State<ChartPlayResult> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Result'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              // FIXME: プレイモードのときはチャートトップに行くべきだと思う
+              router.goNamed('chart_title');
+            },
+            icon: BackButtonIcon()),
       ),
 
       // body メインコンテンツの画面
       body: ListView.builder(
-        itemCount: _currentPlayHistory.lapTimes.length,
+        itemCount: _chapterSummaryList.length,
         itemBuilder: (context, index) {
+          ChapterSummaryModel summaryModel = _chapterSummaryList[index];
+          String summaryId = summaryModel.id;
           return ListTile(
             leading: Text("${index + 1}."),
-            // FIXME: 本当はsummaryのsortOrderに沿ってsummaryIdで取得するのが正しい
-            title:
-                Text("${_currentPlayHistory.lapTimes.values.elementAt(index)}"),
+            title: Text(_currentPlayHistory.lapTimes[summaryId].toString()),
+            subtitle: Text(summaryModel.title),
           );
         },
       ),
