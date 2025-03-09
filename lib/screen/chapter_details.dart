@@ -15,7 +15,7 @@ import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
-import 'package:rta_chart_manager/routes/route.dart';
+import 'package:rta_chart_manager/routes/route_manager.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChapterDetails extends StatefulWidget {
@@ -154,12 +154,8 @@ class _ChapterDetailsState extends State<ChapterDetails> {
               // FIXME: プレイモードのときはチャートトップに行くべきだと思う
               ChartTimer.stop();
               ChartTimer.reset();
-              router.goNamed(
-                'chapter_summary',
-                pathParameters: {
-                  'chartId': widget.chartTitleId,
-                },
-              );
+
+              RouteManager.navChapterSummary(chartId: widget.chartTitleId);
             },
             icon: BackButtonIcon()),
       ),
@@ -178,19 +174,13 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                   child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: ColorTheme.bgBaseColor(context)),
-                onPressed: () => {
-                  router.goNamed(
-                    'chapter_detail',
-                    pathParameters: {
-                      'chartId': widget.chartTitleId,
-                      'summaryId': beforeSummaryId!,
-                    },
-                    queryParameters: {
-                      'editMode': "${widget.isEditMode}",
-                      'playId':
-                          widget.isEditMode ? null : currentChartPlayTime.id,
-                    },
-                  )
+                onPressed: () {
+                  RouteManager.navChapterDetail(
+                    chartId: widget.chartTitleId,
+                    chapterSummaryId: beforeSummaryId!,
+                    isEdit: widget.isEditMode,
+                    playId: widget.isEditMode ? null : currentChartPlayTime.id,
+                  );
                 },
                 child: Text('< Before'),
               )),
@@ -211,17 +201,11 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                     currentChartPlayTime.save();
                   }
 
-                  router.goNamed(
-                    'chapter_detail',
-                    pathParameters: {
-                      'chartId': widget.chartTitleId,
-                      'summaryId': nextSummaryId!,
-                    },
-                    queryParameters: {
-                      'editMode': "${widget.isEditMode}",
-                      'playId':
-                          widget.isEditMode ? null : currentChartPlayTime.id,
-                    },
+                  RouteManager.navChapterDetail(
+                    chartId: widget.chartTitleId,
+                    chapterSummaryId: nextSummaryId!,
+                    isEdit: widget.isEditMode,
+                    playId: widget.isEditMode ? null : currentChartPlayTime.id,
                   );
                 },
                 child: Text('Next >'),
@@ -244,12 +228,9 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                       ChartTimer.stop();
 
                       // FIXME: 遷移先、パラメタ
-                      router.goNamed(
-                        'chart_result',
-                        pathParameters: {
-                          'chartId': widget.chartTitleId,
-                          'playId': currentChartPlayTime.id,
-                        },
+                      RouteManager.navChartResult(
+                        chartId: widget.chartTitleId,
+                        playId: currentChartPlayTime.id,
                       );
                     },
                     child: Text('Game Clear!')),

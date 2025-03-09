@@ -6,7 +6,7 @@ import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
-import 'package:rta_chart_manager/routes/route.dart';
+import 'package:rta_chart_manager/routes/route_manager.dart';
 
 class ChartPlayResult extends StatefulWidget {
   const ChartPlayResult({
@@ -62,7 +62,7 @@ class _ChartTitlesState extends State<ChartPlayResult> {
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
-              router.goNamed('chart_title');
+              RouteManager.navChartTitle();
             },
             icon: BackButtonIcon()),
       ),

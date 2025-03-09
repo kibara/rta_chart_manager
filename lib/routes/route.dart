@@ -31,11 +31,12 @@ final router = GoRouter(
       path: '/chapter_detail/:chartId/:summaryId',
       name: RouteNames.chapterDetail,
       builder: (context, state) => ChapterDetails(
-        key: Key(state.pathParameters['summaryId'] as String),
-        chartTitleId: state.pathParameters['chartId'] as String,
-        chapterSummaryId: state.pathParameters['summaryId'] as String,
-        chartPlayId: state.uri.queryParameters['playId'],
-        isEditMode: bool.parse(state.uri.queryParameters['editMode']!),
+        key: Key(state.pathParameters[RouteParams.summaryId] as String),
+        chartTitleId: state.pathParameters[RouteParams.chartId] as String,
+        chapterSummaryId: state.pathParameters[RouteParams.summaryId] as String,
+        chartPlayId: state.uri.queryParameters[RouteParams.playId],
+        isEditMode:
+            bool.parse(state.uri.queryParameters[RouteParams.editMode]!),
       ),
     ),
     // チャートリザルト
@@ -43,9 +44,9 @@ final router = GoRouter(
       path: '/chart_result/:chartId/:playId',
       name: RouteNames.chartResult,
       builder: (context, state) => ChartPlayResult(
-        key: Key(state.pathParameters['playId'] as String),
-        chartTitleId: state.pathParameters['chartId'] as String,
-        chartPlayId: state.pathParameters['playId'] as String,
+        key: Key(state.pathParameters[RouteParams.playId] as String),
+        chartTitleId: state.pathParameters[RouteParams.chartId] as String,
+        chartPlayId: state.pathParameters[RouteParams.playId] as String,
       ),
     ),
   ],

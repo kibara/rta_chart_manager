@@ -8,7 +8,7 @@ import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
-import 'package:rta_chart_manager/routes/route.dart';
+import 'package:rta_chart_manager/routes/route_manager.dart';
 
 class ChapterSummary extends StatefulWidget {
   const ChapterSummary({super.key, required this.chartTitleId});
@@ -102,14 +102,11 @@ class _ChapterDetailsState extends State<ChapterSummary> {
   }
 
   /// チャート詳細に遷移
-  void _navChapterDetail(int index, BuildContext context) {
-    router.goNamed(
-      'chapter_detail',
-      pathParameters: {
-        'chartId': widget.chartTitleId,
-        'summaryId': _chapterSummary[index].id,
-      },
-      queryParameters: {'editMode': 'true'},
+  void _navChapterDetail(int index) {
+    RouteManager.navChapterDetail(
+      chartId: widget.chartTitleId,
+      chapterSummaryId: _chapterSummary[index].id,
+      isEdit: true,
     );
   }
 
@@ -122,7 +119,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
-              router.goNamed('chart_title');
+              RouteManager.navChartTitle();
             },
             icon: BackButtonIcon()),
       ),
@@ -138,7 +135,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
                   chapterSummaryModel: _chapterSummary[index],
                   editButtonOnPressed: () => _editChapterTitle(index),
                   deleteButtonOnPressed: () => _deleteChartTitle(index),
-                  cardOnTap: () => _navChapterDetail(index, context),
+                  cardOnTap: () => _navChapterDetail(index),
                 );
               },
               onReorder: (int oldIndex, int newIndex) =>
