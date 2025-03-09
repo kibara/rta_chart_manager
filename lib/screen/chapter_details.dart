@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rta_chart_manager/component/buttons/floating_action.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/extension/datetime_extension.dart';
 import 'package:rta_chart_manager/component/extension/duration_extension.dart';
@@ -135,12 +136,10 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   @override
   Widget build(BuildContext context) {
     FloatingActionButton? addActionButton = widget.isEditMode
-        ? FloatingActionButton(
-            backgroundColor: ColorTheme.primaryColor(context),
-            foregroundColor: ColorTheme.secondaryColor(context),
-            tooltip: 'アクション追加',
+        ? FloatingAction.addButton(
+            context,
             onPressed: _addActionItem,
-            child: const Icon(Icons.add),
+            tooltip: 'アクション追加',
           )
         : null;
 

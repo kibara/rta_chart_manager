@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rta_chart_manager/component/buttons/floating_action.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/styles/color_theme.dart';
 import 'package:rta_chart_manager/database/collections.dart';
@@ -146,12 +147,10 @@ class _ChapterDetailsState extends State<ChapterSummary> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ColorTheme.primaryColor(context),
-        foregroundColor: ColorTheme.secondaryColor(context),
+      floatingActionButton: FloatingAction.addButton(
+        context,
         onPressed: _addChapterDetail,
-        tooltip: 'チャプター作成',
-        child: const Icon(Icons.add),
+        tooltip: 'チャプター追加',
       ),
     );
   }

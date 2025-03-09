@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rta_chart_manager/component/buttons/floating_action.dart';
 import 'package:rta_chart_manager/component/cards/chart_title_card.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
@@ -156,12 +157,10 @@ class _ChartTitlesState extends State<ChartTitles> {
           }),
 
       // フローティングボタン
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ColorTheme.primaryColor(context),
-        foregroundColor: ColorTheme.secondaryColor(context),
+      floatingActionButton: FloatingAction.addButton(
+        context,
         onPressed: _addNewChartTitle,
-        tooltip: 'チャート作成',
-        child: const Icon(Icons.add),
+        tooltip: 'チャート追加',
       ),
     );
   }
