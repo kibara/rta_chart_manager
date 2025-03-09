@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/cards/chart_title_card.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
 import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
+import 'package:rta_chart_manager/component/styles/color_theme.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
@@ -123,15 +124,14 @@ class _ChartTitlesState extends State<ChartTitles> {
   // アプリの画面構成と挙動を構成する
   @override
   Widget build(BuildContext context) {
-    // Scaffold = アプリのメイン画面全体
     return Scaffold(
-      // appBar 上部のバー
+      // AppBar
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorTheme.primaryColor(context),
         title: Text(widget.title),
       ),
 
-      // body メインコンテンツの画面
+      // Content Body
       body: ValueListenableBuilder(
           valueListenable: _chartTitleBox.listenable(),
           builder: (context, box, widget) {
@@ -157,6 +157,8 @@ class _ChartTitlesState extends State<ChartTitles> {
 
       // フローティングボタン
       floatingActionButton: FloatingActionButton(
+        backgroundColor: ColorTheme.primaryColor(context),
+        foregroundColor: ColorTheme.secondaryColor(context),
         onPressed: _addNewChartTitle,
         tooltip: 'チャート作成',
         child: const Icon(Icons.add),

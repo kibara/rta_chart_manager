@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rta_chart_manager/component/styles/color_theme.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
@@ -56,7 +57,7 @@ class _ChartTitlesState extends State<ChartPlayResult> {
     return Scaffold(
       // appBar 上部のバー
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorTheme.primaryColor(context),
         title: const Text('Result'),
         automaticallyImplyLeading: false,
         leading: IconButton(

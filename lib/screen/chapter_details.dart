@@ -6,6 +6,7 @@ import 'package:rta_chart_manager/component/extension/duration_extension.dart';
 import 'package:rta_chart_manager/component/extension/string_extension.dart';
 import 'package:rta_chart_manager/component/icons/action_type.dart';
 import 'package:rta_chart_manager/component/stop_watch/chart_timer.dart';
+import 'package:rta_chart_manager/component/styles/color_theme.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/action_item_model.dart';
@@ -135,6 +136,8 @@ class _ChapterDetailsState extends State<ChapterDetails> {
   Widget build(BuildContext context) {
     FloatingActionButton? addActionButton = widget.isEditMode
         ? FloatingActionButton(
+            backgroundColor: ColorTheme.primaryColor(context),
+            foregroundColor: ColorTheme.secondaryColor(context),
             tooltip: 'アクション追加',
             onPressed: _addActionItem,
             child: const Icon(Icons.add),
@@ -142,9 +145,9 @@ class _ChapterDetailsState extends State<ChapterDetails> {
         : null;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: ColorTheme.bgBaseColor(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorTheme.primaryColor(context),
         title: Text(_getCurrentPageTitle()),
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -168,15 +171,14 @@ class _ChapterDetailsState extends State<ChapterDetails> {
                 isEditMode: widget.isEditMode,
               )),
       bottomNavigationBar: Container(
-        color: Theme.of(context).colorScheme.surface,
+        color: ColorTheme.bgBaseColor(context),
         child: Row(
           children: [
             if (beforeSummaryId != null)
               Expanded(
                   child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.inversePrimary),
+                    backgroundColor: ColorTheme.bgBaseColor(context)),
                 onPressed: () => {
                   router.goNamed(
                     'chapter_detail',
@@ -197,8 +199,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
               Expanded(
                   child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.inversePrimary),
+                    backgroundColor: ColorTheme.bgBaseColor(context)),
                 onPressed: () async {
                   if (!widget.isEditMode) {
                     // プレイモードならば、次のチャプターへ遷移する際にラップタイムを記録する
@@ -230,8 +231,7 @@ class _ChapterDetailsState extends State<ChapterDetails> {
               Expanded(
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.inversePrimary),
+                        backgroundColor: ColorTheme.bgBaseColor(context)),
                     onPressed: () async {
                       // チャート完了までいったら、タイマーを止め履歴画面に遷移する
                       List<StopWatchRecord> lapTimes =
@@ -323,8 +323,7 @@ class _DetailPage extends StatelessWidget {
     bool isSection = actionItem.actionType == ActionType.section.id;
     double fontSize = isSection ? 24.0 : 16.0;
     double padding = isSection ? 8.0 : 4.0;
-    Color? titleColor =
-        isSection ? const Color.fromARGB(200, 255, 240, 200) : null;
+    Color? titleColor = isSection ? ColorTheme.secondaryColor(context) : null;
 
     return ListTile(
       key: Key(actionItem.id),
@@ -363,12 +362,12 @@ class _DetailPage extends StatelessWidget {
         // 現在の計測タイム
         if (!isEditMode)
           Container(
-            color: Theme.of(context).colorScheme.surface,
+            color: ColorTheme.bgBaseColor(context),
             child: ChartTimer(),
           ),
         // 区間予定タイム
         Container(
-            color: Theme.of(context).colorScheme.surface,
+            color: ColorTheme.bgBaseColor(context),
             child: ListTile(
               leading: Icon(Icons.timer_outlined),
               title: Text('区間予定タイム ${chapter.estimateTime}'),

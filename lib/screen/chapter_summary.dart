@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rta_chart_manager/component/dialog/dialog_utils.dart';
+import 'package:rta_chart_manager/component/styles/color_theme.dart';
 import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
@@ -115,7 +116,7 @@ class _ChapterDetailsState extends State<ChapterSummary> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorTheme.primaryColor(context),
         title: Text(_chartTitle),
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -146,6 +147,8 @@ class _ChapterDetailsState extends State<ChapterSummary> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: ColorTheme.primaryColor(context),
+        foregroundColor: ColorTheme.secondaryColor(context),
         onPressed: _addChapterDetail,
         tooltip: 'チャプター作成',
         child: const Icon(Icons.add),
