@@ -8,7 +8,7 @@ import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
-import 'package:rta_chart_manager/route.dart';
+import 'package:rta_chart_manager/routes/route.dart';
 
 class ChapterSummary extends StatefulWidget {
   const ChapterSummary({super.key, required this.chartTitleId});

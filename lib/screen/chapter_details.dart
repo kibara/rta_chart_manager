@@ -15,7 +15,7 @@ import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
-import 'package:rta_chart_manager/route.dart';
+import 'package:rta_chart_manager/routes/route.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChapterDetails extends StatefulWidget {

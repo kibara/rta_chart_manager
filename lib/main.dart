@@ -7,7 +7,7 @@ import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 import 'package:rta_chart_manager/database/models/duration_adapter.dart';
-import 'package:rta_chart_manager/route.dart';
+import 'package:rta_chart_manager/routes/route.dart';
 
 /// エントリーポイント
 Future<void> main() async {
