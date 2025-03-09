@@ -9,6 +9,7 @@ import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_title_model.dart';
+import 'package:rta_chart_manager/database/repository/chart_repository.dart';
 import 'package:rta_chart_manager/routes/route_manager.dart';
 
 class ChartTitles extends StatefulWidget {
@@ -22,85 +23,60 @@ class ChartTitles extends StatefulWidget {
 }
 
 class _ChartTitlesState extends State<ChartTitles> {
-  late final Box<ChartTitleModel> _chartTitleBox;
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
-
-  late final List<ChartTitleModel> _sortedChartTitles;
 
   @override
   void initState() {
-    _chartTitleBox = KvsUtils.getBox<ChartTitleModel>(Collections.chartTitles);
     _chapterSummaryBox =
         KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
 
-    _sortedChartTitles = List.from(_chartTitleBox.values);
-    _sortChartTitles();
+    ChartRepository.init();
 
     super.initState();
   }
 
-  /// チャートタイトルのソート
-  void _sortChartTitles() {
-    _sortedChartTitles.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-  }
-
-  /// チャートタイトルの並び替えイベント
-  void _reorderChartTitles(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
-    final ChartTitleModel item = _sortedChartTitles.removeAt(oldIndex);
-    _sortedChartTitles.insert(newIndex, item);
-
-    for (var i = 0; i < _sortedChartTitles.length; i++) {
-      _sortedChartTitles[i].orderIndex = i;
-      _sortedChartTitles[i].save();
-    }
-  }
-
   /// チャート新規作成
-  void _addNewChartTitle() async {
+  void _addNewChart() async {
     final String? newChartTitle =
         await DialogUtils.showEditingDialog(context, 'no title chart');
 
     if (newChartTitle != null) {
       ChartTitleModel newChart = ChartTitleModel(
         newChartTitle,
-        _chartTitleBox.length,
+        ChartRepository.getLength(),
       );
-      _sortedChartTitles.add(newChart);
-      _chartTitleBox.put(newChart.id, newChart);
+
+      ChartRepository.add(newChart);
     }
   }
 
   /// チャートタイトルの編集
   void _editChartTitle(int index) async {
-    final String? editedChartTitle = await DialogUtils.showEditingDialog(
-        context, _sortedChartTitles[index].title);
+    var model = ChartRepository.getAt(index);
+    final String? editedChartTitle =
+        await DialogUtils.showEditingDialog(context, model.title);
 
     if (editedChartTitle != null) {
-      _sortedChartTitles[index].title = editedChartTitle;
-      _sortedChartTitles[index].save();
+      model.title = editedChartTitle;
+      model.save();
     }
   }
 
-  /// チャートの削除
-  void _deleteChartTitle(int index) {
-    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
-    _sortedChartTitles.removeAt(index);
-    _chartTitleBox.delete(chartTitleModel.id);
+  /// チャート削除
+  void _deleteChart(int index) {
+    ChartRepository.delete(index);
   }
 
   /// チャート詳細に遷移
   void _navChapterSummary(int index) {
     RouteManager.navChapterSummary(
-      chartId: _sortedChartTitles[index].id,
+      chartId: ChartRepository.getAt(index).id,
     );
   }
 
   /// チャートをプレイする
   void _playChart(int index) {
-    ChartTitleModel chartTitleModel = _sortedChartTitles[index];
+    var chartTitleModel = ChartRepository.getAt(index);
     ChapterSummaryModel? firstChapter = _chapterSummaryBox.values
         .where((s) => s.chartId == chartTitleModel.id && s.orderIndex == 0)
         .firstOrNull;
@@ -129,24 +105,25 @@ class _ChartTitlesState extends State<ChartTitles> {
 
       // Content Body
       body: ValueListenableBuilder(
-          valueListenable: _chartTitleBox.listenable(),
+          valueListenable: ChartRepository.getBox().listenable(),
           builder: (context, box, widget) {
             return Center(
               child: ReorderableListView.builder(
-                itemCount: _sortedChartTitles.length,
+                itemCount: ChartRepository.getLength(),
                 itemBuilder: (BuildContext context, int index) {
+                  var model = ChartRepository.getAt(index);
                   return ChartTitleCard(
-                    key: Key(_sortedChartTitles[index].id),
+                    key: Key(model.id),
                     index: index,
-                    title: _sortedChartTitles[index].title,
+                    title: model.title,
                     playButtonOnPressed: () => _playChart(index),
                     editButtonOnPressed: () => _editChartTitle(index),
-                    deleteButtonOnPressed: () => _deleteChartTitle(index),
+                    deleteButtonOnPressed: () => _deleteChart(index),
                     cardOnTap: () => _navChapterSummary(index),
                   );
                 },
                 onReorder: (oldIndex, newIndex) =>
-                    _reorderChartTitles(oldIndex, newIndex),
+                    ChartRepository.reorder(oldIndex, newIndex),
               ),
             );
           }),
@@ -154,7 +131,7 @@ class _ChartTitlesState extends State<ChartTitles> {
       // フローティングボタン
       floatingActionButton: FloatingAction.addButton(
         context,
-        onPressed: _addNewChartTitle,
+        onPressed: _addNewChart,
         tooltip: 'チャート追加',
       ),
     );

@@ -5,7 +5,6 @@ import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
 import 'package:rta_chart_manager/database/models/chart_play_time_model.dart';
-import 'package:rta_chart_manager/database/models/chart_title_model.dart';
 import 'package:rta_chart_manager/routes/route_manager.dart';
 
 class ChartPlayResult extends StatefulWidget {
@@ -24,7 +23,6 @@ class ChartPlayResult extends StatefulWidget {
 }
 
 class _ChartTitlesState extends State<ChartPlayResult> {
-  late final Box<ChartTitleModel> _chartTitleBox;
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
   late final Box<ChartPlayTimeModel> _chartPlayResultBox;
 
@@ -33,7 +31,6 @@ class _ChartTitlesState extends State<ChartPlayResult> {
 
   @override
   void initState() {
-    _chartTitleBox = KvsUtils.getBox<ChartTitleModel>(Collections.chartTitles);
     _chapterSummaryBox =
         KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
     _chartPlayResultBox =

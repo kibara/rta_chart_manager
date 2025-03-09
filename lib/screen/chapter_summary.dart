@@ -7,7 +7,7 @@ import 'package:rta_chart_manager/database/collections.dart';
 import 'package:rta_chart_manager/database/kvs_utils.dart';
 import 'package:rta_chart_manager/database/models/chapter_detail_model.dart';
 import 'package:rta_chart_manager/database/models/chapter_summary_model.dart';
-import 'package:rta_chart_manager/database/models/chart_title_model.dart';
+import 'package:rta_chart_manager/database/repository/chart_repository.dart';
 import 'package:rta_chart_manager/routes/route_manager.dart';
 
 class ChapterSummary extends StatefulWidget {
@@ -21,7 +21,6 @@ class ChapterSummary extends StatefulWidget {
 }
 
 class _ChapterDetailsState extends State<ChapterSummary> {
-  late final Box<ChartTitleModel> _chartTitleBox;
   late final Box<ChapterDetailModel> _chapterDetailBox;
 
   late final Box<ChapterSummaryModel> _chapterSummaryBox;
@@ -30,12 +29,11 @@ class _ChapterDetailsState extends State<ChapterSummary> {
 
   @override
   void initState() {
-    _chartTitleBox = KvsUtils.getBox<ChartTitleModel>(Collections.chartTitles);
     _chapterDetailBox =
         KvsUtils.getBox<ChapterDetailModel>(Collections.chapterDetails);
     _chapterSummaryBox =
         KvsUtils.getBox<ChapterSummaryModel>(Collections.chapterSummary);
-    _chartTitle = _chartTitleBox.get(widget.chartTitleId)!.title;
+    _chartTitle = ChartRepository.getId(widget.chartTitleId)!.title;
     _chapterSummary = List.from(_chapterSummaryBox.values.where(
         (ChapterSummaryModel model) => model.chartId == widget.chartTitleId));
     _chapterSummary.sort((a, b) => a.orderIndex > b.orderIndex ? 1 : -1);
