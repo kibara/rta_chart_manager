@@ -19,7 +19,7 @@ final router = GoRouter(
     ),
     // チャプター一覧
     GoRoute(
-      path: "/chart_summary/:chartId",
+      path: "/chapter_summary/:chartId",
       name: RouteNames.chapterSummary,
       builder: (context, state) => ChapterSummary(
         key: Key(state.pathParameters[RouteParams.chartId] as String),
