@@ -325,6 +325,7 @@ class _DetailPage extends StatelessWidget {
       ]),
       minVerticalPadding: padding,
       tileColor: titleColor,
+      textColor: ColorTheme.baseTextColor(),
     );
   }
 

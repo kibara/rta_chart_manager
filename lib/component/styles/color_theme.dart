@@ -13,6 +13,11 @@ class ColorTheme {
 
   /// セカンダリカラー
   static Color secondaryColor(BuildContext context) {
-    return Theme.of(context).colorScheme.inverseSurface;
+    return Theme.of(context).colorScheme.primaryFixedDim;
+  }
+
+  /// 文字のベースカラー
+  static Color baseTextColor() {
+    return Colors.black;
   }
 }
